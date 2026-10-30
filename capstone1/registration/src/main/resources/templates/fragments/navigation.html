@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav class="site-nav" th:fragment="navigation">
+	<a class="brand" th:href="@{/events}"><span class="brand-mark">S</span><span>Campus<span class="brand-accent">Connect</span></span></a>
+	<div class="nav-links">
+		<a th:href="@{/events}">Discover events</a>
+		<a th:href="@{/admin/events}">Admin dashboard</a>
+	</div>
+</nav>
+</body>
+</html>

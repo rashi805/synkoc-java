@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Register | CampusConnect</title>
+	<link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="page-background">
+<header class="topbar"><div class="container" th:replace="~{fragments/navigation :: navigation}"></div></header>
+<main class="container form-layout">
+	<a class="back-link" th:href="@{/events}">← Back to events</a>
+	<div class="form-grid">
+		<section class="form-intro">
+			<p class="eyebrow eyebrow-dark">SAVE YOUR SEAT</p>
+			<h1>You're one step<br>from <span>being there.</span></h1>
+			<p>Tell us a little about yourself and we'll save you a place.</p>
+			<div class="form-event-card">
+				<span class="form-event-label">YOU'RE REGISTERING FOR</span>
+				<h2 th:text="${event.title}">Event title</h2>
+				<p th:text="${#temporals.format(event.date, 'EEEE, MMMM d, yyyy')}">Date</p>
+				<p th:text="${event.venue}">Venue</p>
+				<p class="form-seats" th:text="${event.seatsLeft} + ' seats remaining'">2 seats remaining</p>
+			</div>
+		</section>
+		<section class="form-panel">
+			<h2>Your details</h2>
+			<p class="form-subtitle">All fields are required.</p>
+			<form th:action="@{/events/{id}/register(id=${event.id})}" th:object="${registrationForm}" method="post">
+				<div class="alert alert-error" role="alert" th:if="${#fields.hasGlobalErrors()}">
+					<p th:each="error : ${#fields.globalErrors()}" th:text="${error}">Registration error</p>
+				</div>
+				<div class="field">
+					<label for="name">Full name</label>
+					<input id="name" type="text" th:field="*{name}" maxlength="60" autocomplete="name" placeholder="e.g. Rashi Mishra">
+					<p class="field-error" th:errors="*{name}"></p>
+				</div>
+				<div class="field">
+					<label for="email">Email address</label>
+					<input id="email" type="email" th:field="*{email}" autocomplete="email" placeholder="you@college.edu">
+					<p class="field-error" th:errors="*{email}"></p>
+				</div>
+				<div class="field">
+					<label for="college">College</label>
+					<input id="college" type="text" th:field="*{college}" autocomplete="organization" placeholder="Your college or university">
+					<p class="field-error" th:errors="*{college}"></p>
+				</div>
+				<div class="field">
+					<label for="yearOfStudy">Year of study</label>
+					<select id="yearOfStudy" th:field="*{yearOfStudy}">
+						<option value="">Choose your year</option>
+						<option value="1">Year 1</option><option value="2">Year 2</option>
+						<option value="3">Year 3</option><option value="4">Year 4</option>
+					</select>
+					<p class="field-error" th:errors="*{yearOfStudy}"></p>
+				</div>
+				<button class="button button-dark button-wide" type="submit">Complete registration <span aria-hidden="true">↗</span></button>
+				<p class="privacy-note">Your details are used only to manage this event registration.</p>
+			</form>
+		</section>
+	</div>
+</main>
+<footer class="footer"><div class="container footer-inner"><span>CampusConnect · Made for campus life</span><a th:href="@{/events}">Browse events</a></div></footer>
+</body>
+</html>

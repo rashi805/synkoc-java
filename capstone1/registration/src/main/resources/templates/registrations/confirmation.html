@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>You're registered | CampusConnect</title>
+	<link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="page-background">
+<header class="topbar"><div class="container" th:replace="~{fragments/navigation :: navigation}"></div></header>
+<main class="container confirmation-wrap">
+	<section class="confirmation-card">
+		<div class="confirmation-icon">✓</div>
+		<p class="eyebrow eyebrow-dark">YOU'RE ON THE LIST</p>
+		<h1>See you there,<br><span th:text="${registration.name}">Student</span>.</h1>
+		<p class="confirmation-copy">Your place is saved. We can't wait to see you at <strong th:text="${event.title}">Event title</strong>.</p>
+		<div class="confirmation-details">
+			<div><span>EVENT</span><strong th:text="${event.title}">Event title</strong></div>
+			<div><span>DATE</span><strong th:text="${#temporals.format(event.date, 'EEEE, MMMM d, yyyy')}">Date</strong></div>
+			<div><span>REGISTRATION NUMBER</span><strong th:text="${registration.id}">100</strong></div>
+		</div>
+		<a class="button button-dark" th:href="@{/events}">Explore more events <span aria-hidden="true">↗</span></a>
+	</section>
+</main>
+<footer class="footer"><div class="container footer-inner"><span>CampusConnect · Made for campus life</span><a th:href="@{/events}">Browse events</a></div></footer>
+</body>
+</html>

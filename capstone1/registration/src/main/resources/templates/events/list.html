@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Student events | CampusConnect</title>
+	<link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header class="topbar"><div class="container" th:replace="~{fragments/navigation :: navigation}"></div></header>
+<main>
+	<section class="hero">
+		<div class="container hero-inner">
+			<div class="hero-copy">
+				<p class="eyebrow"><span class="eyebrow-dot"></span> YOUR CAMPUS, YOUR COMMUNITY</p>
+				<h1>Make room for<br><span>something great.</span></h1>
+				<p class="hero-description">Find your next idea, new skill, or new friend. Explore what's happening around campus and save your seat.</p>
+				<a class="button button-light" href="#upcoming">Explore upcoming events <span aria-hidden="true">↓</span></a>
+			</div>
+			<div class="hero-art" aria-hidden="true">
+				<div class="art-orbit orbit-one"></div><div class="art-orbit orbit-two"></div>
+				<div class="art-card"><span class="art-spark">✳</span><span class="art-card-label">MAKE IT<br>HAPPEN</span><span class="art-card-date">TOGETHER</span></div>
+				<span class="art-star star-one">✦</span><span class="art-star star-two">✳</span>
+				<div class="art-caption"><span class="caption-line"></span><span>GOOD THINGS<br>START HERE</span></div>
+			</div>
+		</div>
+	</section>
+	<section class="section container" id="upcoming">
+		<div class="section-heading">
+			<div><p class="eyebrow eyebrow-dark">THE CAMPUS CALENDAR</p><h2>Coming up</h2></div>
+			<p class="section-note">A little inspiration is just around the corner.</p>
+		</div>
+		<div class="event-grid" th:if="${!#lists.isEmpty(events)}">
+			<article class="event-card" th:each="event, loop : ${events}">
+				<div class="event-card-top">
+					<span class="event-index" th:text="${#numbers.formatInteger(loop.index + 1, 2)}">01</span>
+					<span class="status-pill" th:if="${event.seatsLeft > 0}"><span class="status-dot"></span> OPEN</span>
+					<span class="status-pill status-full" th:if="${event.seatsLeft == 0}">FULL</span>
+				</div>
+				<p class="event-date" th:text="${#temporals.format(event.date, 'EEEE, MMMM d, yyyy')}">Monday, September 15, 2025</p>
+				<h3 th:text="${event.title}">Event title</h3>
+				<p class="event-venue"><span aria-hidden="true">↗</span> <span th:text="${event.venue}">Venue</span></p>
+				<div class="event-card-bottom">
+					<div><span class="capacity-number" th:text="${event.seatsLeft}">12</span><span class="capacity-label"> seats left</span><span class="capacity-total" th:text="' / ' + ${event.capacity} + ' spots'"> / 40 spots</span></div>
+					<a class="text-link" th:href="@{/events/{id}/register(id=${event.id})}" th:classappend="${event.seatsLeft == 0} ? ' link-disabled' : ''" th:attr="aria-disabled=${event.seatsLeft == 0}">Register <span aria-hidden="true">↗</span></a>
+				</div>
+			</article>
+		</div>
+		<div class="empty-state" th:if="${#lists.isEmpty(events)}">
+			<span class="empty-icon">✳</span><h3>Nothing on the calendar just yet</h3><p>Check back soon for events to explore.</p>
+		</div>
+	</section>
+	<section class="bottom-cta"><div class="container bottom-cta-inner"><p class="eyebrow">YOUR NEXT CHAPTER</p><h2>Show up curious.<br>Leave inspired.</h2><a class="button button-dark" href="#upcoming">Find your next event <span aria-hidden="true">↗</span></a></div></section>
+</main>
+<footer class="footer"><div class="container footer-inner"><span>CampusConnect · Made for campus life</span><a th:href="@{/admin/events}">Admin dashboard</a></div></footer>
+</body>
+</html>
