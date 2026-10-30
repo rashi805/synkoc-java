@@ -1,0 +1,101 @@
+:root {
+    color-scheme: light;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #202735;
+    background: #f3f6fb;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    line-height: 1.6;
+}
+
+.site-header {
+    padding: 4rem 1.5rem;
+    text-align: center;
+    color: #ffffff;
+    background: linear-gradient(135deg, #19345c, #315c91);
+}
+
+.eyebrow {
+    margin: 0;
+    color: #c9dbf5;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.page-title {
+    margin: 0.4rem 0;
+    color: #ffffff;
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+}
+
+.intro {
+    margin: 0 auto 1.5rem;
+    max-width: 38rem;
+}
+
+.register-button {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border: 2px solid #b91c1c;
+    border-radius: 0.4rem;
+    color: #ffffff;
+    background-color: #dc2626;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color 160ms ease, transform 160ms ease;
+}
+
+.register-button:hover,
+.register-button:focus-visible {
+    background-color: #991b1b;
+    transform: translateY(-2px);
+}
+
+.site-nav {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 1rem;
+    background-color: #ffffff;
+}
+
+.site-nav a {
+    color: #19345c;
+    font-weight: 700;
+}
+
+main {
+    width: min(100% - 2rem, 52rem);
+    margin: 2rem auto;
+}
+
+.content-section {
+    margin-bottom: 1.25rem;
+    padding: 1.5rem;
+    border: 1px solid #d5deeb;
+    border-radius: 0.65rem;
+    background-color: #ffffff;
+}
+
+.content-section h2 {
+    margin-top: 0;
+    color: #19345c;
+}
+
+.site-footer {
+    padding: 1.5rem;
+    text-align: center;
+    color: #ffffff;
+    background-color: #202735;
+}
+
+.site-footer p {
+    margin: 0.3rem;
+}

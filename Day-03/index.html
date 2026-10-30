@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A TechFest page for practising browser Developer Tools.">
+    <title>TechFest 2026 | Developer Tools Lab</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <header class="site-header" data-inspect="header">
+        <p class="eyebrow">CampusConnect student showcase</p>
+        <h1 id="page-title" class="page-title">TechFest 2026</h1>
+        <p class="intro">Explore a day of ideas, technology, and campus community.</p>
+        <a class="register-button" href="#schedule" role="button" aria-label="Register for TechFest 2026">
+            Register
+        </a>
+    </header>
+
+    <nav class="site-nav" aria-label="Main navigation">
+        <a href="#about">About</a>
+        <a href="#schedule">Schedule</a>
+        <a href="#contact">Contact</a>
+    </nav>
+
+    <main>
+        <section id="about" class="content-section" data-section="about">
+            <h2>About the event</h2>
+            <p>TechFest brings students together to share projects, learn from one another, and explore new ideas.</p>
+        </section>
+
+        <section id="schedule" class="content-section" data-section="schedule">
+            <h2>Event schedule</h2>
+            <ul>
+                <li>Welcome and opening session</li>
+                <li>Student project showcase</li>
+                <li>Closing and networking</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer id="contact" class="site-footer">
+        <p>Questions? Contact the TechFest student team.</p>
+        <p><small>Developer Tools practice page — inspect the elements, styles, and console output.</small></p>
+    </footer>
+</body>
+</html>

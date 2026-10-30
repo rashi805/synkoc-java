@@ -1,0 +1,4 @@
+# From Pressing Enter to Seeing a Webpage
+
+When you type a website address into the browser and press **Enter**, the browser first uses DNS to find the IP address associated with the domain name. It then establishes a secure HTTPS connection to the server. Over that connection, the browser sends an HTTP request for the requested page. The backend receives the request, runs the matching route and application rules, and may ask a database for information such as products or events. The backend uses the result to prepare an HTTP response, which includes a status code and content such as HTML. The browser reads the HTML and builds the page structure. It then requests linked resources such as CSS, JavaScript, and images, applies the styles, runs scripts, and renders the page for you to see. If the request fails or the resource has moved, the response may contain a different status code.
+
