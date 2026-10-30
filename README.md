@@ -18,6 +18,7 @@ Welcome to my learning repository for the **SYNKOC Java Full Stack Development i
 - [Day 05 — Complete Documentation](#day-05--what-is-a-database)
 - [Day 06 — Complete Documentation](#day-06--sql-basics-crud)
 - [Day 08 — Complete Documentation](#day-08--what-is-a-backend)
+- [Day 11 — Complete Documentation](#day-11--building-a-json-api-in-spring-boot)
 - [Learning Progress](#learning-progress)
 - [Projects](#projects)
 - [Skills Developed](#skills-developed)
@@ -28,7 +29,7 @@ Welcome to my learning repository for the **SYNKOC Java Full Stack Development i
 
 ## About the Internship
 
-This repository documents my progress through the SYNKOC Java Full Stack Development internship. It is a central place to follow the concepts introduced, review practical exercises, and navigate the work completed on each day. The current material covers web application fundamentals, browser tooling, introductory Java programming, and database concepts and schema design.
+This repository documents my progress through the SYNKOC Java Full Stack Development internship. It is a central place to follow the concepts introduced, review practical exercises, and navigate the work completed on each day. The current material covers web application fundamentals, browser tooling, introductory Java programming, database concepts, and Spring Boot JSON APIs.
 
 ## Technology Stack
 
@@ -40,8 +41,8 @@ The Day 01 technology notes introduce the full-stack tools below. The status col
 | Category | Technologies | Evidence in this repository |
 | --- | --- | --- |
 | **Frontend** | HTML, CSS, JavaScript | Introduced in the Day 01 technology overview; no frontend implementation is included yet. |
-| **Backend** | Java, Spring Boot, Spring Data JPA | Java is used in the Day 02 console exercises. Spring Boot and Spring Data JPA are introduced in Day 01 notes; no backend application is included yet. |
-| **Database** | SQL, MySQL, H2 | Introduced in the Day 01 technology overview; Day 05 includes MySQL-compatible schema examples and relationship exercises, but no live database connection is configured. |
+| **Backend** | Java, Spring Boot, Spring Web, Spring Data JPA | Day 09 and Day 11 use Spring Boot web applications and REST controllers. Day 11's sample APIs use in-memory lists; Spring Data JPA is introduced conceptually but is not used for persistence here. |
+| **Database** | SQL, MySQL, H2, SQLite | Day 05 includes MySQL-compatible schema examples, and Day 06 practises SQLite. Day 11's APIs are in-memory and do not connect to a database. |
 | **Tools** | Maven, Git, GitHub, IntelliJ IDEA | Maven and IntelliJ IDEA are introduced in the Day 01 notes. The existing root README also identified Git and GitHub Codespaces; this repository is hosted on GitHub. |
 
 Day 06 adds practical SQL exercises using SQLite; these scripts do not configure a persistent database connection.
@@ -57,6 +58,7 @@ Day 06 adds practical SQL exercises using SQLite; these scripts do not configure
 | **Day 05** | What Is a Database | Completed | [Day 05 documentation](#day-05--what-is-a-database) |
 | **Day 06** | SQL Basics (CRUD) | Completed | [Day 06 documentation](#day-06--sql-basics-crud) |
 | **Day 08** | What Is a Backend | Completed | [Day 08 documentation](#day-08--what-is-a-backend) |
+| **Day 11** | Building a JSON API in Spring Boot | Checker passed; lab-page submission pending | [Day 11 documentation](#day-11--building-a-json-api-in-spring-boot) |
 
 ## Day 01 — What Is Java Full Stack Development?
 
@@ -1157,6 +1159,180 @@ Day 08 helped me understand the backend as the trusted server-side part of a web
 - [College Event Portal routes](Day-08/06-college-event-portal-routes.md)
 - [Day 08 lab notes](Day-08/lab-notes.md)
 
+## Day 11 — Building a JSON API in Spring Boot
+
+- **Internship:** SYNKOC Java Full Stack
+- **Module:** JFS-M5-02
+- **Day:** 11
+- **Title:** Building a JSON API in Spring Boot
+- **Database:** In-memory sample data; no persistent database is configured
+- **Status:** All six official checker parts passed
+
+Day 11 built and tested JSON APIs with Spring Boot. Parts A and B implement an events API in `day11/events` on port `8081`. Part C reuses the **Courses** resource established in Day 10 by adding a course API to the existing Day 09 `day09/campusevents` app on port `8080`. The course sample records and request values below come from the supplied Day 10 table.
+
+### Learning Objectives
+
+By completing Day 11, I learned to:
+
+- Return Java records as JSON from REST controller methods.
+- Map HTTP `GET`, `POST`, and `DELETE` requests to endpoints.
+- Return appropriate HTTP responses, including `200 OK`, `201 Created`, `204 No Content`, `400 Bad Request`, `404 Not Found`, and `415 Unsupported Media Type`.
+- Filter a collection using a query parameter.
+- Validate required request fields and values on the server.
+- Test an API with HTTP requests and the official lab checker.
+- Keep separate Spring Boot applications on ports `8080` and `8081`.
+
+### Part A — Events JSON API
+
+The Maven project is `day11/events`, configured for port `8081`. Its `Event` Java record contains `id`, `name`, and `seats`. The controller is mapped under `/api/events`.
+
+| Method and path | Behavior |
+| --- | --- |
+| `GET /api/events` | Returns the event collection as a JSON array with `200 OK`. |
+| `GET /api/events/{id}` | Returns the matching event with `200 OK`, or `404 Not Found` when the ID is absent. |
+| `POST /api/events` | Reads an `EventRequest` JSON object, validates it, creates an event, and returns it with `201 Created` and a `Location` header. |
+| `DELETE /api/events/{id}` | Removes the matching event and returns `204 No Content`; a later delete of that ID returns `404 Not Found`. |
+
+The starter event records are:
+
+| ID | Name | Seats |
+| ---: | --- | ---: |
+| 1 | Hackathon | 120 |
+| 2 | Robotics Workshop | 40 |
+| 3 | Cultural Night | 300 |
+
+For example:
+
+```http
+GET /api/events/2
+```
+
+returns:
+
+```json
+{"id":2,"name":"Robotics Workshop","seats":40}
+```
+
+A valid create request is JSON:
+
+```json
+{"name":"Quiz Contest","seats":60}
+```
+
+When creation succeeds, the response is `201 Created`, includes a `Location` such as `/api/events/4`, and returns the created event as JSON. An unknown event ID such as `/api/events/999999` returns `404`.
+
+### Part B — Filtering, Validation, and Delete
+
+The optional `minSeats` query parameter filters events by a minimum number of seats:
+
+```http
+GET /api/events?minSeats=100
+```
+
+returns events with at least 100 seats. A query such as `GET /api/events?minSeats=999` returns an empty JSON array when no event matches.
+
+The server rejects invalid create requests with `400 Bad Request` and a JSON error body. The name must be present and non-blank; seats must be present and at least 1. A request using `application/x-www-form-urlencoded` instead of JSON is refused with `415 Unsupported Media Type`, because the controller expects a JSON `@RequestBody`.
+
+Deleting an existing event returns `204 No Content`. Deleting the same ID again returns `404 Not Found`. The official checker creates and deletes its own temporary test event to verify this behavior.
+
+### Part C — Day 09 Courses API
+
+The Day 10 resource is **Courses**, not College Event Portal events. The existing Day 09 app now exposes `/api/courses` and remains on port `8080`. Its configuration includes:
+
+```properties
+server.port=8080
+synkoc.api.path=/api/courses
+synkoc.api.sample={"title":"Mobile App Basics","fee":8999,"weeks":4,"level":"beginner"}
+```
+
+The course JSON record has these fields:
+
+| Field | Type | Example |
+| --- | --- | --- |
+| `id` | Number | `1` |
+| `title` | String | `"Java Full Stack"` |
+| `fee` | Number | `14999` |
+| `weeks` | Integer | `6` |
+| `level` | String | `"beginner"` |
+
+The initial course data comes from the supplied Day 10 table:
+
+| ID | Title | Fee | Weeks | Level |
+| ---: | --- | ---: | ---: | --- |
+| 1 | Java Full Stack | 14999 | 6 | beginner |
+| 2 | Data Science | 12999 | 6 | intermediate |
+| 3 | Cloud Basics | 4999 | 2 | beginner |
+
+The endpoints are:
+
+| Method and path | Behavior |
+| --- | --- |
+| `GET /api/courses` | Returns the course list as a JSON array with `200 OK`. |
+| `GET /api/courses/{id}` | Returns the matching course, or `404 Not Found` for an unknown ID. |
+| `POST /api/courses` | Validates and creates a course, returning `201 Created`, a `Location` header, and the created JSON record. |
+
+The POST sample supplied for Day 10 is:
+
+```json
+{
+  "title": "Mobile App Basics",
+  "fee": 8999,
+  "weeks": 4,
+  "level": "beginner"
+}
+```
+
+The server requires a non-blank `title`, a `fee` that is present and at least zero, an integer `weeks` value, and a non-blank `level`. An empty `{}` request returns `400 Bad Request`. Fractional or out-of-range week counts are rejected rather than silently converted to an integer. The successful response uses a server-generated ID and a `Location` such as `/api/courses/4`.
+
+The Day 10 external practice API mentioned an `X-API-Key`. That credential requirement belongs to that external practice API; this local Day 11 Spring Boot API does not require the header.
+
+Both APIs currently keep sample records in application memory. They demonstrate HTTP and JSON behavior but do not save records to a database; data added at runtime is reset when the corresponding application restarts.
+
+### Official Day 11 Checker Result
+
+The supplied official checker was run from `day11/` with both applications running, using the name `Rashi Mishra`. Its actual output was:
+
+```text
+SYNKOC-CHECK Day11-Lab name=Rashi Mishra
+A1 PASS P41JZD
+A2 PASS OA2QWG
+A3 PASS OK2CLF
+A4 PASS PY0D2A
+B PASS 2T8RNZ
+C PASS 2J95Z0
+```
+
+These are the six per-part codes emitted by the checker; it did not print a separate overall completion code. Full checker output:
+
+```text
+============================================================
+SYNKOC-CHECK Day11-Lab name=Rashi Mishra
+A1 PASS P41JZD
+A2 PASS OA2QWG
+A3 PASS OK2CLF
+A4 PASS PY0D2A
+B PASS 2T8RNZ
+C PASS 2J95Z0
+============================================================
+Copy everything between the lines into the lab page.
+```
+
+The checker instructs the learner to copy this output into the Day 11 lab page for webpage verification.
+The checker passed locally; submission of this output to the external lab webpage is still pending because that page is not open or connected in this workspace.
+
+### What I Learned
+
+Day 11 helped me build on Spring Boot basics by returning JSON records, mapping URL and HTTP-method combinations to Java methods, validating request bodies, and choosing HTTP status codes. I practised filtering and deleting events, then reused the actual Day 10 Courses resource in the Day 09 application. I also learned to run separate applications on different ports and verify both APIs with real HTTP requests and the official checker.
+
+### Day 11 Project Files
+
+- [Official Day 11 checker](day11/CheckLab.java)
+- [Day 11 events Maven project](day11/events/)
+- [Day 09 Courses controller](day09/campusevents/src/main/java/in/synkoc/campusevents/CourseController.java)
+- [Day 09 Course record](day09/campusevents/src/main/java/in/synkoc/campusevents/Course.java)
+- [Day 09 Course request record](day09/campusevents/src/main/java/in/synkoc/campusevents/CourseRequest.java)
+- [Day 09 application configuration](day09/campusevents/src/main/resources/application.properties)
+
 ## Learning Progress
 
 | Day | Main learning |
@@ -1168,6 +1344,7 @@ Day 08 helped me understand the backend as the trusted server-side part of a web
 | Day 05 | Database tables, sample SQL queries and joins, primary and foreign keys, SQL vs NoSQL, and relational schema design. |
 | Day 06 | SQLite SQL basics, table constraints, inserting and querying records, sorting, filtering, limiting, counting, updating, and deleting. |
 | Day 08 | Backend responsibilities, Spring Boot controller mappings, project structure, three-layer architecture, server-side validation, and REST routes. |
+| Day 11 | Spring Boot JSON APIs, HTTP status codes, request validation, event filtering/deletion, and a Courses API verified by the official checker. |
 
 ## Projects
 
@@ -1184,14 +1361,16 @@ The current work supports the following introductory skills. Conceptual topics a
 | Area | Skills evidenced by the completed work |
 | --- | --- |
 | **Frontend Development** | Explain the roles of HTML, CSS, and JavaScript; identify frontend responsibilities; inspect page structure and browser messages with DevTools; document semantic HTML pages, accessible images, and links. |
-| **Backend Development** | Explain backend responsibilities and request handling at a conceptual level; write Java console programs using variables, input/output, and conditional logic. No Spring Boot service is implemented yet. |
-| **Database Management** | Explain database tables and relationships, compare SQL and NoSQL, write MySQL-compatible schema examples with keys and constraints, and model canteen, library, and event-portal data. No live database is configured. |
+| **Backend Development** | Write Java console programs; build Spring Boot JSON APIs with controllers, request records, validation, and HTTP responses. The Day 11 sample APIs use in-memory data. |
+| **Database Management** | Explain database tables and relationships, compare SQL and NoSQL, write MySQL-compatible schema examples with keys and constraints, and model canteen, library, and event-portal data. The Day 11 APIs are not connected to a persistent database. |
 | **Development Tools** | Use browser DevTools concepts and work with Java source files in this repository. Maven and IntelliJ IDEA are introduced in the Day 01 notes. |
 | **Problem Solving** | Break down URLs and HTTP responses, trace request flow, validate input, apply calculation rules, and check Java exercises against sample cases. |
 
 Day 06 additionally practises SQLite CRUD queries and constraints.
 
 Day 08 additionally documents backend request handling, application layers, validation, and REST endpoint design.
+
+Day 11 additionally practises Spring Boot JSON APIs, HTTP response codes, request validation, and official checker-based verification.
 
 ## Repository Structure
 
@@ -1242,6 +1421,25 @@ Day 08 additionally documents backend request handling, application layers, vali
 │   ├── 05-library-api-endpoints.md
 │   ├── 06-college-event-portal-routes.md
 │   └── lab-notes.md
+├── day09/
+│   ├── CheckLab.java
+│   ├── campusevents/
+│   │   ├── pom.xml
+│   │   └── src/main/java/in/synkoc/campusevents/
+│   │       ├── Course.java
+│   │       ├── CourseController.java
+│   │       ├── CourseRequest.java
+│   │       └── HomeController.java
+│   └── hello/
+├── day11/
+│   ├── CheckLab.java
+│   └── events/
+│       ├── pom.xml
+│       └── src/main/java/in/synkoc/events/
+│           ├── Event.java
+│           ├── EventController.java
+│           ├── EventRequest.java
+│           └── EventsApplication.java
 └── day02/
     ├── CheckLab.java
     ├── FeeCalculator.java
@@ -1258,6 +1456,8 @@ Day 06's complete written lab documentation is also included above; its practica
 
 Day 08's complete written lab documentation is included above, with supporting notes in `Day-08/`.
 
+Day 11's complete documentation is included above. Its official checker is alongside the Maven application in `day11/`; the Courses API additions are in the existing Day 09 `campusevents` app. No separate day README files are used.
+
 ## Learning Outcomes
 
 Across the completed days, I have documented how the frontend, backend, and database relate; how to inspect HTML and CSS with browser DevTools; how to monitor network requests and interpret HTTP status codes; how to use the JavaScript Console; and how DNS, HTTP, DOM, CSSOM, browser rendering, and API requests fit together. Day 02 adds Java practice with data types, console interaction, conditionals, input checks, and formatted fee calculations. Day 04 adds foundational HTML, semantic page structure, accessible links and images, a profile page, and the CampusEvents homepage. The CampusConnect plan applies full-stack concepts to a proposed application without representing it as implemented. Day 05 adds relational table design, keys and relationships, SQL/NoSQL comparisons, and MySQL-compatible schemas for canteen, library, and college event portal data.
@@ -1265,6 +1465,8 @@ Across the completed days, I have documented how the frontend, backend, and data
 Day 06 adds SQLite table creation, constraints, CRUD operations, and practical filtering and sorting queries.
 
 Day 08 adds Spring Boot backend concepts, controller endpoint mapping, layered architecture, server-side validation, and REST route design.
+
+Day 11 adds working JSON APIs in the Day 11 events app and the Day 09 Courses app, including request validation, status handling, and per-part official checker verification.
 
 ## Future Learning
 
