@@ -16,6 +16,8 @@ Welcome to my learning repository for the **SYNKOC Java Full Stack Development i
 - [Day 03 — Complete Documentation](#day-03--lab-how-the-web-works)
 - [Day 04 — Complete Documentation](#day-04--html-basics)
 - [Day 05 — Complete Documentation](#day-05--what-is-a-database)
+- [Day 06 — Complete Documentation](#day-06--sql-basics-crud)
+- [Day 08 — Complete Documentation](#day-08--what-is-a-backend)
 - [Learning Progress](#learning-progress)
 - [Projects](#projects)
 - [Skills Developed](#skills-developed)
@@ -42,6 +44,8 @@ The Day 01 technology notes introduce the full-stack tools below. The status col
 | **Database** | SQL, MySQL, H2 | Introduced in the Day 01 technology overview; Day 05 includes MySQL-compatible schema examples and relationship exercises, but no live database connection is configured. |
 | **Tools** | Maven, Git, GitHub, IntelliJ IDEA | Maven and IntelliJ IDEA are introduced in the Day 01 notes. The existing root README also identified Git and GitHub Codespaces; this repository is hosted on GitHub. |
 
+Day 06 adds practical SQL exercises using SQLite; these scripts do not configure a persistent database connection.
+
 ## Daily Learning Roadmap
 
 | Day | Topic | Status | Documentation / Work |
@@ -51,6 +55,8 @@ The Day 01 technology notes introduce the full-stack tools below. The status col
 | **Day 03** | How the Web Works browser lab | Completed | [Day 03 documentation](#day-03--lab-how-the-web-works) |
 | **Day 04** | HTML Basics | Completed | [Day 04 documentation](#day-04--html-basics) |
 | **Day 05** | What Is a Database | Completed | [Day 05 documentation](#day-05--what-is-a-database) |
+| **Day 06** | SQL Basics (CRUD) | Completed | [Day 06 documentation](#day-06--sql-basics-crud) |
+| **Day 08** | What Is a Backend | Completed | [Day 08 documentation](#day-08--what-is-a-backend) |
 
 ## Day 01 — What Is Java Full Stack Development?
 
@@ -724,6 +730,433 @@ The SQL scripts are MySQL 8.0.16+ schema examples; they do not configure or conn
 - **Checks passed:** 6/6
 - **Completion code:** `JFS-D05-66MJVQ`
 
+## Day 06 — SQL Basics (CRUD)
+
+- **Internship module:** JFS-M3-02
+- **Lab title:** SQL Basics (CRUD)
+- **Database:** SQLite
+- **Status:** Completed
+- **Checks passed:** 6/6
+- **Completion code:** `JFS-D06-5WMY6R`
+
+### Learning Objectives
+
+By completing Day 06, I practised how to:
+
+- Create a table with column types and constraints.
+- Insert records without manually assigning SQLite integer primary keys.
+- Query, filter, sort, limit, and count records.
+- Update and delete selected records safely.
+- Apply `NOT NULL`, `UNIQUE`, `PRIMARY KEY`, and `CHECK` constraints.
+- Use these SQL basics in a contacts exercise and the College Event Portal.
+
+### SQL and SQLite
+
+**SQL** (Structured Query Language) is used to define and work with data in relational databases. **SQLite** is a lightweight relational database engine that can store data in a local file and does not need a separate database server. SQL commands apply rules and transformations to rows and columns in tables.
+
+A **table** stores records of one kind. Each **row** is one record, and each **column** is an attribute shared by those records. In the courses exercise, `courses` is a table, each inserted course is a row, and `title`, `fee`, and `duration_weeks` are columns.
+
+### Part A — Guided SQL Tasks
+
+#### Task 1 — Create a Courses Table
+
+`CREATE TABLE` makes a new table. `INTEGER PRIMARY KEY` uniquely identifies each row; in SQLite this form is generated when the insert omits the ID. `TEXT` stores text. `NOT NULL` disallows a missing value. `REAL` stores a floating-point number, such as a decimal fee. `CHECK (fee >= 0)` requires the fee to be nonnegative. `duration_weeks` is an integer and is optional because it has no `NOT NULL` constraint.
+
+```sql
+CREATE TABLE courses (
+    id INTEGER PRIMARY KEY,
+    title TEXT NOT NULL,
+    fee REAL CHECK (fee >= 0),
+    duration_weeks INTEGER
+);
+```
+
+#### Task 2 — Insert and Display Courses
+
+`INSERT INTO` adds rows. Since the statement leaves out `id`, SQLite assigns the integer primary-key values; no IDs are manually inserted. The final `SELECT` displays all columns and rows in `courses`.
+
+```sql
+INSERT INTO courses (title, fee, duration_weeks)
+VALUES
+    ('Java Full Stack', 14999, 6),
+    ('Data Science', 12999, 6),
+    ('Cloud Basics', 4999, 2),
+    ('UI Design', 6999, 4);
+
+SELECT * FROM courses;
+```
+
+#### Task 3 — Query Students
+
+These queries expect an existing `students` table with `name`, `city`, and `fee` columns. The lab's original eight student records were not supplied, so no particular output is claimed.
+
+**A. Students from Bengaluru, sorted by name**
+
+`WHERE` filters records; `ORDER BY` sorts the results; `ASC` means ascending (alphabetical here).
+
+```sql
+SELECT name, city
+FROM students
+WHERE city = 'Bengaluru'
+ORDER BY name ASC;
+```
+
+**B. Three students paying the highest fees**
+
+`DESC` sorts in descending order, so larger fees appear first. `LIMIT 3` returns at most three rows.
+
+```sql
+SELECT name, fee
+FROM students
+ORDER BY fee DESC
+LIMIT 3;
+```
+
+**C. Count students whose city is missing**
+
+`COUNT(*)` counts matching rows. `IS NULL` checks whether a value is missing; SQL does not test a missing value with `= NULL`.
+
+```sql
+SELECT COUNT(*)
+FROM students
+WHERE city IS NULL;
+```
+
+#### Task 4 — Update and Delete
+
+`UPDATE` changes existing rows, `SET` gives the new value, and `WHERE` selects which rows to change. Here, the fee for the course titled `Cloud Basics` becomes `5999`. `DELETE` removes the row with ID 5 if one exists. The final `SELECT` shows the remaining course rows.
+
+```sql
+UPDATE courses
+SET fee = 5999
+WHERE title = 'Cloud Basics';
+
+DELETE FROM courses
+WHERE id = 5;
+
+SELECT * FROM courses;
+```
+
+**Important:** Always verify the target rows before running an `UPDATE` or `DELETE`. Without a `WHERE` clause, either command can affect every row in the table.
+
+### Part B — Contacts Challenge
+
+The contacts table uses `TEXT` for names, phone numbers, email addresses, and cities. `INSERT` adds the fictional sample records. `UNIQUE` prevents duplicate non-NULL email addresses. The query uses `SELECT` to return names and phone numbers for Bengaluru contacts, then sorts them alphabetically.
+
+```sql
+CREATE TABLE contacts (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    phone TEXT NOT NULL,
+    email TEXT UNIQUE,
+    city TEXT
+);
+
+INSERT INTO contacts (name, phone, email, city)
+VALUES
+    ('Asha Nair', '555-0101', 'asha.nair@example.com', 'Bengaluru'),
+    ('Rohan Mehta', '555-0102', 'rohan.mehta@example.com', 'Mysuru'),
+    ('Meera Iyer', '555-0103', 'meera.iyer@example.com', 'Bengaluru'),
+    ('Kabir Shah', '555-0104', 'kabir.shah@example.com', 'Pune'),
+    ('Nisha Rao', '555-0105', 'nisha.rao@example.com', 'Chennai');
+
+SELECT name, phone
+FROM contacts
+WHERE city = 'Bengaluru'
+ORDER BY name ASC;
+```
+
+The names and contact details are fictional. `example.com` and the `555-01xx` phone numbers are reserved for examples.
+
+### Part C — Internship Application: College Event Portal
+
+The Day 05 internship application is a **College Event Portal** with `users`, `events`, and `registrations` tables. This practical focuses on the `events` table. Its ID is the primary key; `title` and `event_date` are required. The description and organizer ID are optional in this exercise.
+
+```sql
+CREATE TABLE events (
+    id INTEGER PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT,
+    event_date TEXT NOT NULL,
+    organizer_id INTEGER
+);
+
+INSERT INTO events (title, description, event_date, organizer_id)
+VALUES
+    ('Campus Coding Sprint', 'A friendly team programming challenge.', '2026-11-08', 1),
+    ('Cloud Computing Workshop', 'An introductory workshop on cloud services.', '2026-11-12', 2),
+    ('Student Design Showcase', 'Students present interface and product design work.', '2026-11-16', 3),
+    ('Data Science Guest Talk', 'A talk about practical data science projects.', '2026-11-20', 1),
+    ('Annual Tech Expo', 'A campus exhibition of student technology projects.', '2026-11-24', 2);
+```
+
+This `WHERE` query filters for events on or after November 10, 2026. With the five sample dates above, it returns some but not all of the inserted events:
+
+```sql
+SELECT id, title, event_date
+FROM events
+WHERE event_date >= '2026-11-10';
+```
+
+This query lists the events in ascending date order. The dates use the consistent `YYYY-MM-DD` text format, which sorts chronologically:
+
+```sql
+SELECT id, title, event_date
+FROM events
+ORDER BY event_date ASC;
+```
+
+### Important Commands and Concepts
+
+| Command or concept | Meaning in this lab |
+| --- | --- |
+| `CREATE TABLE` | Creates a table and defines its columns and rules. |
+| `INSERT` | Adds new rows to a table. |
+| `SELECT` | Reads selected columns and rows. |
+| `UPDATE` | Changes existing values; use `WHERE` to limit the target rows. |
+| `DELETE` | Removes rows; use `WHERE` to limit which rows are removed. |
+| `WHERE` | Filters rows by a condition. |
+| `ORDER BY` | Sorts query results. |
+| `ASC` / `DESC` | Sorts ascending / descending. |
+| `LIMIT` | Caps the number of rows returned. |
+| `COUNT(*)` | Counts the matching rows. |
+| `IS NULL` | Tests whether a value is missing. |
+| `NOT NULL` | Requires a column to have a value. |
+| `UNIQUE` | Prevents duplicate non-NULL values for a constrained column. |
+| `PRIMARY KEY` | Uniquely identifies each row. |
+| `CHECK` | Enforces a condition such as `fee >= 0`. |
+
+### What I Learned
+
+Day 06 helped me understand SQL as a way to create tables and work with records. I practised the CRUD operations—creating table structures, inserting records, reading data with filtered and sorted queries, updating selected rows, and deleting selected rows. I also learned to use constraints to protect data and to be careful with `UPDATE` and `DELETE` statements that lack a `WHERE` clause.
+
+### Day 06 Practical Files
+
+- [Create courses table](Day-06/01-create-table.sql)
+- [Insert and display courses](Day-06/02-insert-courses.sql)
+- [Query students](Day-06/03-query-students.sql)
+- [Update and delete courses](Day-06/04-update-delete.sql)
+- [Contacts challenge](Day-06/05-contacts-challenge.sql)
+- [College Event Portal events practical](Day-06/06-internship-app-events.sql)
+- [Day 06 lab notes](Day-06/lab-notes.md)
+
+## Day 08 — What Is a Backend
+
+- **Internship:** SYNKOC Java Full Stack
+- **Module:** JFS-M4-01
+- **Day:** 08
+- **Title:** What Is a Backend
+- **Status:** Completed
+- **Result:** All 6 checks passed
+- **Completion code:** `JFS-D08-N9ZXKP`
+
+### Learning Objectives
+
+By completing Day 08, I learned to:
+
+- Explain what the backend does and how Spring Boot can serve HTTP requests.
+- Map HTTP methods and paths to controller methods.
+- Find common application files in a Spring Boot project.
+- Explain the roles of the controller, service, repository, and database.
+- Trace a registration request from the client through persistence and back.
+- Distinguish backend validation and authorization from frontend presentation.
+- Design REST-style endpoints for a library and the College Event Portal.
+
+### Backend, Spring Boot, and REST
+
+The **backend** is the server-side part of an application. It receives requests, applies trusted rules, reads or changes data, and returns responses. For the College Event Portal, the backend can check whether an event has seats available before saving a registration.
+
+**Spring Boot** is a Java framework that helps build and run Spring applications. It provides convenient application configuration and can start an embedded web server to receive HTTP requests.
+
+A **REST-style API** exposes resources through URLs and uses HTTP methods to express the requested operation. A **route** is the method and path together—for example, `GET /events`. **Endpoint mapping** connects that route to a controller method.
+
+### Controller Mapping
+
+A Spring controller can use a class-level path prefix and method-level mappings:
+
+```java
+@RestController
+@RequestMapping("/events")
+public class EventController {
+
+    @GetMapping
+    public List<Event> all() { /* ... */ }
+
+    @GetMapping("/{id}")
+    public Event one(@PathVariable Long id) { /* ... */ }
+
+    @PostMapping
+    public Event create(@RequestBody Event event) { /* ... */ }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) { /* ... */ }
+
+    @GetMapping("/{id}/registrations")
+    public List<Registration> registrations(@PathVariable Long id) { /* ... */ }
+
+    @PutMapping("/{id}")
+    public Event update(@PathVariable Long id, @RequestBody Event event) { /* ... */ }
+}
+```
+
+The class prefix `/events` is combined with each method path:
+
+| HTTP request | Controller method |
+| --- | --- |
+| `GET /events` | `all()` |
+| `GET /events/7` | `one()` |
+| `POST /events` | `create()` |
+| `DELETE /events/7` | `delete()` |
+| `GET /events/7/registrations` | `registrations()` |
+| `PUT /events/3` | `update()` |
+| `GET /courses` | No method matches this controller's `/events` base path. |
+| `POST /events/7` | No method matches; no `POST /{id}` mapping is declared. |
+
+For `GET /events/42`, Spring matches `/{id}` and `@PathVariable` supplies `42` to the method's `id` parameter.
+
+Important annotations:
+
+- `@RestController` identifies a web controller whose results are written to the response, commonly as JSON.
+- `@RequestMapping` sets a shared or method-specific path and can add request conditions.
+- `@GetMapping`, `@PostMapping`, `@PutMapping`, and `@DeleteMapping` map the corresponding HTTP method to a Java method.
+- `@PathVariable` reads a value from a URL segment such as `42` in `/events/42`.
+- `@RequestBody` reads the request body, often JSON, and converts it to a Java object.
+
+An HTTP method is part of the match: a path that exists for `GET` does not automatically match a `POST`.
+
+### Spring Boot Project Structure
+
+```text
+synkoc-events/
+├── pom.xml
+└── src/
+    ├── main/
+    │   ├── java/in/synkoc/events/
+    │   │   ├── EventsApplication.java
+    │   │   ├── controller/EventController.java
+    │   │   ├── service/EventService.java
+    │   │   ├── repository/EventRepository.java
+    │   │   └── model/Event.java
+    │   └── resources/
+    │       ├── application.properties
+    │       ├── templates/events.html
+    │       └── static/css/style.css
+    └── test/
+        └── java/in/synkoc/events/EventServiceTest.java
+```
+
+| Change or task | File | Purpose |
+| --- | --- | --- |
+| Change server port | `application.properties` | Application configuration, such as `server.port=8081`. |
+| Add a dependency | `pom.xml` | Maven project metadata and dependency declarations. |
+| Find `main()` | `EventsApplication.java` | Application entry point that starts Spring Boot. |
+| Add a URL | `EventController.java` | HTTP paths and methods mapped to controller handlers. |
+| Add business rules | `EventService.java` | Application decisions and coordination. |
+| Add database queries | `EventRepository.java` | Data-access operations and query declarations. |
+| Add event fields | `Event.java` | The Java event model, potentially a JPA entity. |
+| Change HTML | `templates/events.html` | Server-rendered page template. |
+| Change button colour | `static/css/style.css` | Styles for the page. |
+| Write automatic tests | `EventServiceTest.java` | Repeatable tests of service behavior. |
+
+### Three-Layer Architecture
+
+```text
+Client → Controller → Service → Repository → Database
+```
+
+1. **Controller:** Receives HTTP requests, reads path values and request bodies, calls a service, and forms the HTTP response.
+2. **Service:** Applies business rules such as checking event capacity or calculating a registration fee.
+3. **Repository:** Reads and writes data, for example through a Spring Data `JpaRepository`.
+4. **Database:** Stores records persistently. It is the storage layer used by the repository.
+
+Code classification:
+
+| Code or responsibility | Layer |
+| --- | --- |
+| `@PostMapping("/events/{id}/register")` | Controller |
+| Check seats availability | Service |
+| `JpaRepository` interface | Repository |
+| `return service.register(id, form)` | Controller |
+| Calculate registration fee | Service |
+| `findByCity(String city)` | Repository |
+
+#### Registration Request and Response Flow
+
+For `POST /events/7/register`, the request proceeds as follows:
+
+1. The request reaches the embedded Tomcat server.
+2. Spring matches its method and path and routes it to `EventController.register()`.
+3. The controller reads the path ID (`7`) and the request body.
+4. `EventService` checks event availability and applies the registration rules.
+5. `RegistrationRepository` saves the registration.
+6. The database stores the new row.
+7. The result returns through the service and controller. The controller sends the registration as JSON with HTTP status `201 Created`.
+
+The response travels in reverse: **Database → Repository → Service → Controller → Client**. The repository returns the stored record, the service passes back the result, and the controller serializes it and selects the HTTP response status. `201 Created` is suitable when the request creates a new registration.
+
+### Backend Validation Rules
+
+The backend must enforce rules that protect data integrity, access, capacity, money, and eligibility:
+
+- Check remaining seats.
+- Calculate registration fees using trusted server-side rules.
+- Validate submitted email addresses on the server.
+- Check administrator authorization for protected actions.
+- Prevent duplicate registrations.
+- Reject past event dates where the application disallows them.
+- Verify discount codes and their expiry.
+
+Validation checks that data follows rules; **authorization** checks that the current user is permitted to act. The server must make these decisions. Frontend validation alone is not secure because users can change the browser code or send requests without using the intended page.
+
+Frontend-only examples are presentation conveniences: turn an invalid field red while typing, display dates in the user's language, collapse long descriptions, show confetti after registration, or remember the last opened tab. These can improve the experience but cannot replace server-side checks.
+
+### Library REST API Endpoints
+
+REST paths use **nouns** to identify resources; the **HTTP method** describes what the client wants to do. For example, `GET /books` reads the collection, while `POST /books` creates a book.
+
+| Job | Method | Path | Purpose |
+| --- | --- | --- | --- |
+| List all books | `GET` | `/books` | Return the book collection. |
+| Show one book | `GET` | `/books/{id}` | Return the book identified by `id`. |
+| Add a book | `POST` | `/books` | Create a book from the request body. |
+| Borrow a book | `POST` | `/loans` | Create a loan associated with a member and book. |
+| Return a book | `PATCH` | `/loans/{id}` | Partially update a loan, such as recording its return date. |
+| Show member loans | `GET` | `/members/{id}/loans` | Return loans for the specified member. |
+| List available books | `GET` | `/books/available` | Return books currently available to borrow. |
+
+`GET` reads, `POST` submits or creates, and `PATCH` partially updates. `{id}` represents a concrete path value, such as `/books/7`.
+
+### College Event Portal Routes
+
+The Day 05 application design uses the `users`, `events`, and `registrations` tables. These routes use resource names and appropriate HTTP methods:
+
+| Method | Path | Purpose | Related table(s) |
+| --- | --- | --- | --- |
+| `GET` | `/events` | Display all college events. | `events` |
+| `GET` | `/events/{id}` | Display one event's details. | `events` |
+| `POST` | `/users` | Create a new user account. | `users` |
+| `POST` | `/auth/login` | Authenticate an existing user. | `users` |
+| `GET` | `/registrations` | Display registrations for the authenticated user. | `registrations`, `events` |
+| `POST` | `/events/{id}/registrations` | Register the authenticated user for an event. | `registrations`, `users`, `events` |
+| `DELETE` | `/registrations/{id}` | Cancel a registration after authorization. | `registrations` |
+| `GET` | `/users/{id}` | Display a user profile subject to access rules. | `users` |
+
+Event routes read from `events`. Creating a user writes to `users`; login checks the account record. An event registration creates a `registrations` row referring to one user and one event. The user's identity for `/registrations` and event registration must come from authenticated server-side context, not an untrusted ID supplied by the client. A cancellation removes or marks the registration according to the application's retention rules. Passwords must be stored as hashes, not plaintext.
+
+### What I Learned
+
+Day 08 helped me understand the backend as the trusted server-side part of a web application. I learned how Spring maps HTTP method/path combinations to controller methods, how project files divide responsibilities, and how the controller, service, repository, and database work together. I also learned that validation and authorization must be enforced on the server, and practised designing REST routes for a library and the College Event Portal.
+
+### Day 08 Supporting Files
+
+- [Controller mapping](Day-08/01-controller-mapping.md)
+- [Spring Boot project structure](Day-08/02-spring-boot-project-structure.md)
+- [Three-layer architecture](Day-08/03-three-layer-architecture.md)
+- [Backend validation rules](Day-08/04-backend-validation-rules.md)
+- [Library API endpoints](Day-08/05-library-api-endpoints.md)
+- [College Event Portal routes](Day-08/06-college-event-portal-routes.md)
+- [Day 08 lab notes](Day-08/lab-notes.md)
+
 ## Learning Progress
 
 | Day | Main learning |
@@ -733,6 +1166,8 @@ The SQL scripts are MySQL 8.0.16+ schema examples; they do not configure or conn
 | Day 03 | HTML/CSS inspection, Network monitoring, status codes, the Console, DNS/HTTP, DOM/CSSOM, rendering, and API communication. |
 | Day 04 | HTML document structure, links, accessible images, semantic elements, profile-page content, and the CampusEvents homepage. |
 | Day 05 | Database tables, sample SQL queries and joins, primary and foreign keys, SQL vs NoSQL, and relational schema design. |
+| Day 06 | SQLite SQL basics, table constraints, inserting and querying records, sorting, filtering, limiting, counting, updating, and deleting. |
+| Day 08 | Backend responsibilities, Spring Boot controller mappings, project structure, three-layer architecture, server-side validation, and REST routes. |
 
 ## Projects
 
@@ -753,6 +1188,10 @@ The current work supports the following introductory skills. Conceptual topics a
 | **Database Management** | Explain database tables and relationships, compare SQL and NoSQL, write MySQL-compatible schema examples with keys and constraints, and model canteen, library, and event-portal data. No live database is configured. |
 | **Development Tools** | Use browser DevTools concepts and work with Java source files in this repository. Maven and IntelliJ IDEA are introduced in the Day 01 notes. |
 | **Problem Solving** | Break down URLs and HTTP responses, trace request flow, validate input, apply calculation rules, and check Java exercises against sample cases. |
+
+Day 06 additionally practises SQLite CRUD queries and constraints.
+
+Day 08 additionally documents backend request handling, application layers, validation, and REST endpoint design.
 
 ## Repository Structure
 
@@ -787,6 +1226,22 @@ The current work supports the following introductory skills. Conceptual topics a
 │   ├── lab-notes.md
 │   ├── library-database.sql
 │   └── sql-vs-nosql.md
+├── Day-06/
+│   ├── 01-create-table.sql
+│   ├── 02-insert-courses.sql
+│   ├── 03-query-students.sql
+│   ├── 04-update-delete.sql
+│   ├── 05-contacts-challenge.sql
+│   ├── 06-internship-app-events.sql
+│   └── lab-notes.md
+├── Day-08/
+│   ├── 01-controller-mapping.md
+│   ├── 02-spring-boot-project-structure.md
+│   ├── 03-three-layer-architecture.md
+│   ├── 04-backend-validation-rules.md
+│   ├── 05-library-api-endpoints.md
+│   ├── 06-college-event-portal-routes.md
+│   └── lab-notes.md
 └── day02/
     ├── CheckLab.java
     ├── FeeCalculator.java
@@ -799,9 +1254,17 @@ The current work supports the following introductory skills. Conceptual topics a
 
 Day 03, Day 04, and Day 05's complete written lab documentation is included above in this master README. The practical files are grouped in their day folders; there are no per-day README files.
 
+Day 06's complete written lab documentation is also included above; its practical files are grouped in `Day-06/`.
+
+Day 08's complete written lab documentation is included above, with supporting notes in `Day-08/`.
+
 ## Learning Outcomes
 
 Across the completed days, I have documented how the frontend, backend, and database relate; how to inspect HTML and CSS with browser DevTools; how to monitor network requests and interpret HTTP status codes; how to use the JavaScript Console; and how DNS, HTTP, DOM, CSSOM, browser rendering, and API requests fit together. Day 02 adds Java practice with data types, console interaction, conditionals, input checks, and formatted fee calculations. Day 04 adds foundational HTML, semantic page structure, accessible links and images, a profile page, and the CampusEvents homepage. The CampusConnect plan applies full-stack concepts to a proposed application without representing it as implemented. Day 05 adds relational table design, keys and relationships, SQL/NoSQL comparisons, and MySQL-compatible schemas for canteen, library, and college event portal data.
+
+Day 06 adds SQLite table creation, constraints, CRUD operations, and practical filtering and sorting queries.
+
+Day 08 adds Spring Boot backend concepts, controller endpoint mapping, layered architecture, server-side validation, and REST route design.
 
 ## Future Learning
 
