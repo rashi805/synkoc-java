@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: synkoc-events-day27
+    runtime: docker
+    rootDir: Days-12-to-30/Day-27/events
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+  - type: web
+    name: synkoc-hello-api
+    runtime: docker
+    rootDir: Days-12-to-30/Day-27/hello
+    healthCheckPath: /actuator/health
+  - type: web
+    name: synkoc-campus-courses
+    runtime: docker
+    rootDir: day09/campusevents
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod

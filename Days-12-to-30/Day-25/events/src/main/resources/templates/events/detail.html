@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Event details</title><link rel="stylesheet" th:href="@{/css/style.css}"></head>
+<body><div class="page"><div th:replace="~{fragments :: header}"></div>
+<main class="panel">
+	<p class="success" th:if="${success}" th:text="${success}" role="status"></p>
+	<h1 th:text="${event.name}">Event name</h1>
+	<p><strong>City:</strong> <span th:text="${event.city}">City</span></p>
+	<p><strong>Seats:</strong> <span th:text="${event.seats}">0</span></p>
+	<a class="button" th:href="@{/events/{id}/edit(id=${event.id})}">Edit event</a>
+	<a th:href="@{/events}">Back to events</a>
+</main></div></body>
+</html>

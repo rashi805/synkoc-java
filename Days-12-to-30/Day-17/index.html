@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Forms and Tables Lab</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<header>
+		<h1>Campus Learning</h1>
+		<nav aria-label="Main navigation">
+			<a href="#enquiry">Enquiry</a>
+			<a href="#courses">Courses</a>
+			<a href="#register">Register</a>
+		</nav>
+	</header>
+	<main>
+		<section id="enquiry">
+			<h2>Send an enquiry</h2>
+			<form action="/enquiry" method="post">
+				<label for="enquiry-name">Name</label>
+				<input id="enquiry-name" name="name" type="text" minlength="3" required>
+
+				<label for="enquiry-email">Email</label>
+				<input id="enquiry-email" name="email" type="email" required>
+
+				<label for="enquiry-phone">Phone</label>
+				<input id="enquiry-phone" name="phone" type="tel" pattern="[0-9]{10}" minlength="10" maxlength="10" required>
+
+				<label for="enquiry-age">Age</label>
+				<input id="enquiry-age" name="age" type="number" min="16" max="60" required>
+
+				<label for="enquiry-course">Course of interest</label>
+				<select id="enquiry-course" name="course">
+					<option value="java">Java Full Stack</option>
+					<option value="cloud">Cloud Basics</option>
+					<option value="data">Data Science</option>
+				</select>
+
+				<label for="enquiry-message">Message</label>
+				<textarea id="enquiry-message" name="message" rows="4"></textarea>
+				<button type="submit">Send enquiry</button>
+			</form>
+		</section>
+
+		<section id="courses">
+			<h2>Course catalogue</h2>
+			<table>
+				<caption>Current learning programmes</caption>
+				<thead>
+					<tr><th scope="col">Course</th><th scope="col">Duration</th><th scope="col">Level</th></tr>
+				</thead>
+				<tbody>
+					<tr><td>Java Full Stack</td><td>6 weeks</td><td>Beginner</td></tr>
+					<tr><td>Data Science</td><td>6 weeks</td><td>Intermediate</td></tr>
+					<tr><td>Cloud Basics</td><td>2 weeks</td><td>Beginner</td></tr>
+				</tbody>
+			</table>
+		</section>
+
+		<section id="register">
+			<h2>Register for a course</h2>
+			<form action="/register" method="post">
+				<label for="full_name">Full name</label>
+				<input id="full_name" name="full_name" type="text" minlength="3" maxlength="60" required>
+
+				<label for="register-email">Email</label>
+				<input id="register-email" name="email" type="email" required>
+
+				<label for="register-phone">Phone</label>
+				<input id="register-phone" name="phone" type="tel" pattern="[0-9]{10}" minlength="10" maxlength="10" required>
+
+				<label for="password">Password</label>
+				<input id="password" name="password" type="password" minlength="8" required>
+
+				<label for="course">Course</label>
+				<select id="course" name="course" required>
+					<option value="">Choose a course</option>
+					<option value="java">Java Full Stack</option>
+					<option value="cloud">Cloud Basics</option>
+					<option value="data">Data Science</option>
+				</select>
+
+				<fieldset>
+					<legend>Learning mode</legend>
+					<label class="choice" for="online"><input id="online" name="mode" type="radio" value="online" required> Online</label>
+					<label class="choice" for="classroom"><input id="classroom" name="mode" type="radio" value="classroom"> Classroom</label>
+				</fieldset>
+
+				<label class="choice" for="terms"><input id="terms" name="terms" type="checkbox" required> I agree to the course terms</label>
+				<button type="submit">Create registration</button>
+			</form>
+		</section>
+		<p><a href="internship-application.html">View the internship application form</a></p>
+	</main>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Campus events</title><link rel="stylesheet" th:href="@{/css/style.css}"></head>
+<body>
+<div class="page"><div th:replace="~{fragments :: header}"></div>
+<main>
+	<p class="success" th:if="${success}" th:text="${success}" role="status">Saved.</p>
+	<h1>Campus events</h1>
+	<p>Explore student events and find the next thing to learn together.</p>
+	<p><a class="button" th:href="@{/events/new}">Create an event</a></p>
+	<div class="event-grid">
+		<article class="event-card" th:each="event : ${events}">
+			<h2 th:text="${event.name}">Event name</h2>
+			<p th:text="${event.city}">City</p>
+			<p th:text="${event.seats} + ' seats'">Seats</p>
+			<a th:href="@{/events/{id}(id=${event.id})}">View event</a>
+			<a th:href="@{/events/{id}/edit(id=${event.id})}">Edit</a>
+		</article>
+	</div>
+	<p th:if="${#lists.isEmpty(events)}">No events have been added yet.</p>
+</main></div>
+</body>
+</html>

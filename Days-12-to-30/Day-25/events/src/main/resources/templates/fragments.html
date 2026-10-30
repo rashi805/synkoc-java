@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<header th:fragment="header">
+	<a th:href="@{/events}">Campus Events</a>
+	<nav aria-label="Main navigation">
+		<a th:href="@{/events}">Browse events</a>
+		<a th:href="@{/events/new}">Create event</a>
+		<a th:href="@{/api/events}">Events API</a>
+	</nav>
+</header>
+</body>
+</html>

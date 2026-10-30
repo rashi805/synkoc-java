@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title th:text="${formTitle}">Event form</title><link rel="stylesheet" th:href="@{/css/style.css}"></head>
+<body><div class="page"><div th:replace="~{fragments :: header}"></div>
+<main class="panel">
+	<h1 th:text="${formTitle}">Event form</h1>
+	<form th:object="${eventForm}" th:action="${eventId} == null ? @{/events} : @{/events/{id}(id=${eventId})}" method="post">
+		<label for="name">Event name</label>
+		<input id="name" type="text" th:field="*{name}" maxlength="60" required>
+		<p class="field-error" th:errors="*{name}"></p>
+		<label for="city">City</label>
+		<input id="city" type="text" th:field="*{city}" required>
+		<p class="field-error" th:errors="*{city}"></p>
+		<label for="seats">Seats</label>
+		<input id="seats" type="number" th:field="*{seats}" min="1" max="5000" required>
+		<p class="field-error" th:errors="*{seats}"></p>
+		<button class="button" type="submit">Save event</button>
+	</form>
+</main></div></body>
+</html>

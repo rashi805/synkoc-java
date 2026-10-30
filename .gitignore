@@ -1,0 +1,12 @@
+# Java build output and local databases
+**/target/
+**/data/
+*.class
+*.mv.db
+*.trace.db
+
+# Local environment and IDE files
+.env
+**/.env
+.idea/
+.vscode/

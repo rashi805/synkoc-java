@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Campus Courses Internship Enquiry</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<main>
+		<h1>Join the campus courses team</h1>
+		<p>Tell us about your interest in helping students find a course.</p>
+		<form action="/internship/applications" method="post">
+			<label for="applicant-name">Full name</label>
+			<input id="applicant-name" name="name" type="text" minlength="3" required>
+			<label for="applicant-email">Email address</label>
+			<input id="applicant-email" name="email" type="email" required>
+			<label for="applicant-college">College</label>
+			<input id="applicant-college" name="college" type="text" required>
+			<label for="applicant-interest">Why are you interested?</label>
+			<textarea id="applicant-interest" name="interest" minlength="20" required></textarea>
+			<button type="submit">Submit application</button>
+		</form>
+	</main>
+</body>
+</html>

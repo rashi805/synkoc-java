@@ -1,14 +1,33 @@
 # SYNKOC – Java Full Stack Development Internship
 
-Welcome to my learning repository for the **SYNKOC Java Full Stack Development internship**. It brings together the learning notes, Java practice programs, and project planning completed so far, with links to each day's work.
+Welcome to my learning repository for the **SYNKOC Java Full Stack Development internship**. It brings together the early learning materials, Java practice programs, web forms and styling, SQL exercises, Spring applications, and an integrated student event registration capstone.
 
 **Organization:** SYNKOC · **Domain:** Java Full Stack Development
 
 > The stack overview distinguishes topics introduced in learning notes from technologies used in the code currently in this repository.
 
+## Portfolio Additions (Days 12–30)
+
+The later work is organized separately from the preserved Days 1–11 material. The files below contain locally implemented and validated exercises; missing original checker sources, account-dependent GitHub actions, and deployment credentials are not represented as completed.
+
+| Work | Location | Evidence |
+|---|---|---|
+| Day 12 Git practice repository | `/workspaces/git-lab` (separate from this repository) | Six local commits exercise status, restore, revert, file recovery, and ignored Java class files. This practice repository has not been pushed. |
+| Days 15–16 Java methods and collections | [`Days-12-to-30/Day-15`](Days-12-to-30/Day-15/) and [`Days-12-to-30/Day-16`](Days-12-to-30/Day-16/) | Standalone console programs compile; the six helper assertions pass. |
+| Days 17–18 HTML and CSS | [`Days-12-to-30/Day-17`](Days-12-to-30/Day-17/) and [`Days-12-to-30/Day-18`](Days-12-to-30/Day-18/) | Form semantics, labels, validation attributes, and requested style rules were checked. |
+| Days 19–20 SQL | [`Days-12-to-30/Day-19/products.sql`](Days-12-to-30/Day-19/products.sql) and [`Days-12-to-30/Day-20/orders.sql`](Days-12-to-30/Day-20/orders.sql) | Scripts execute against SQLite, including sample product and registration data. |
+| Day 22–27 Events API progression | [`Days-12-to-30/Day-22/events`](Days-12-to-30/Day-22/events/), [`Day-23/events`](Days-12-to-30/Day-23/events/), [`Day-24/events`](Days-12-to-30/Day-24/events/), [`Day-25/events`](Days-12-to-30/Day-25/events/), [`Day-26/events`](Days-12-to-30/Day-26/events/), [`Day-27/events`](Days-12-to-30/Day-27/events/) | Separate Java 21 Spring projects progress from H2/JPA through Thymeleaf, DTO-based REST CRUD, test-first fixes, event search, Actuator, and Docker configuration. Values used for the four sample events were selected because the original sample-event data was not in the workspace. |
+| Day 27 Hello API and Render configuration | [`Days-12-to-30/Day-27/hello`](Days-12-to-30/Day-27/hello/) and [`render.yaml`](render.yaml) | Greeting API, health/info endpoints, Docker files, and a Render blueprint are prepared. No Render service is claimed live. |
+| Day 9 course application persistence | [`day09/campusevents`](day09/campusevents/) | Existing application now uses JPA and file-based H2; test configuration is isolated in memory. The original `synkoc.api.path` and `synkoc.api.sample` properties remain unchanged. |
+| Capstone 1 | [`capstone1/registration`](capstone1/registration/) | Integrated student event registration, admin pages, privacy-safe API, and 19 passing tests, including real HTTP tests. |
+
+Day 13's GitHub collaboration activities remain blocked because the GitHub CLI is unauthenticated. Days 14 and 21 were not part of the supplied lab list. Day 27's Render blueprint is prepared but not deployed: no authorized Render deployment or live service verification was available. No remote PRs, merges, or deployment URLs are claimed.
+
 ## Table of Contents
 
 - [About the Internship](#about-the-internship)
+- [Portfolio Additions (Days 12–30)](#portfolio-additions-days-12-30)
+- [Setup and Local Validation](#setup-and-local-validation)
 - [Technology Stack](#technology-stack)
 - [Daily Learning Roadmap](#daily-learning-roadmap)
 - [Day 01 — Complete Documentation](#day-01--what-is-java-full-stack-development)
@@ -40,12 +59,25 @@ The Day 01 technology notes introduce the full-stack tools below. The status col
 
 | Category | Technologies | Evidence in this repository |
 | --- | --- | --- |
-| **Frontend** | HTML, CSS, JavaScript | Introduced in the Day 01 technology overview; no frontend implementation is included yet. |
-| **Backend** | Java, Spring Boot, Spring Web, Spring Data JPA | Day 09 and Day 11 use Spring Boot web applications and REST controllers. Day 11's sample APIs use in-memory lists; Spring Data JPA is introduced conceptually but is not used for persistence here. |
-| **Database** | SQL, MySQL, H2, SQLite | Day 05 includes MySQL-compatible schema examples, and Day 06 practises SQLite. Day 11's APIs are in-memory and do not connect to a database. |
-| **Tools** | Maven, Git, GitHub, IntelliJ IDEA | Maven and IntelliJ IDEA are introduced in the Day 01 notes. The existing root README also identified Git and GitHub Codespaces; this repository is hosted on GitHub. |
+| **Frontend** | HTML, CSS | Days 17–18 include accessible forms, semantic course tables, validation attributes, reusable CSS selectors, and styled course/profile cards. |
+| **Backend** | Java, Spring Boot, Spring Web, Spring Data JPA, Thymeleaf, Validation | Day 9 persists course data with JPA; Day 22 demonstrates an events REST API; Capstone 1 connects Thymeleaf pages, JPA services, and DTO-based REST endpoints. |
+| **Database** | SQL, H2, SQLite | Days 5–6 and 19–20 include SQL schema, filtering, sorting, and aggregation exercises. Day 9 and capstone applications use H2; tests use separate in-memory databases. |
+| **Testing** | JUnit 5, AssertJ, Spring Boot Test | The course API and capstone include application tests; the capstone suite covers web, persistence rules, admin pages, and REST privacy/error behavior. |
+| **Tools** | Maven, Git, GitHub Actions, Docker | Maven wrappers are included with the Spring projects. Local Git history exercises are in `/workspaces/git-lab`; CI jobs cover the course app, Day 11/22/26 samples, and capstone. Dockerfiles and a Render blueprint are prepared, but remote deployment is not claimed. |
 
 Day 06 adds practical SQL exercises using SQLite; these scripts do not configure a persistent database connection.
+
+## Setup and Local Validation
+
+The Spring projects target Java 21 and include a Maven Wrapper. From the repository root, enter the project you want to run:
+
+```bash
+cd capstone1/registration
+./mvnw test
+./mvnw spring-boot:run
+```
+
+The capstone listens on port `8082`. The Day 09 Courses API uses port `8080`, and the separate Day 22–27 Events sample uses port `8081` when run independently. Run other Spring sample tests from each project's directory with `./mvnw -B test`. Day 19–20 SQL scripts use SQLite; Java console exercises can be compiled with `javac` from their respective folder. Application-specific READMEs describe each project's routes and persistence setup.
 
 ## Daily Learning Roadmap
 
@@ -59,6 +91,21 @@ Day 06 adds practical SQL exercises using SQLite; these scripts do not configure
 | **Day 06** | SQL Basics (CRUD) | Completed | [Day 06 documentation](#day-06--sql-basics-crud) |
 | **Day 08** | What Is a Backend | Completed | [Day 08 documentation](#day-08--what-is-a-backend) |
 | **Day 11** | Building a JSON API in Spring Boot | Checker passed; lab-page submission pending | [Day 11 documentation](#day-11--building-a-json-api-in-spring-boot) |
+| **Day 12** | Git basics | Local practice complete; push not attempted | `/workspaces/git-lab` (separate practice repository) |
+| **Day 13** | GitHub collaboration | Remote PR work blocked: GitHub CLI is unauthenticated | [Day 9 application README](day09/campusevents/README.md) |
+| **Day 15** | Loops and collections | Implemented and compiled | [Day 15 programs](Days-12-to-30/Day-15/) |
+| **Day 16** | Methods and classes | Implemented; helper tests pass | [Day 16 programs](Days-12-to-30/Day-16/) |
+| **Day 17** | HTML forms and tables | Implemented; markup audited | [Day 17 pages](Days-12-to-30/Day-17/) |
+| **Day 18** | CSS basics | Implemented; requested selectors audited | [Day 18 page](Days-12-to-30/Day-18/) |
+| **Day 19** | SQL filtering and sorting | SQL scripts executed with SQLite | [Day 19 SQL](Days-12-to-30/Day-19/products.sql) |
+| **Day 20** | SQL aggregation | SQL scripts executed with SQLite | [Day 20 SQL](Days-12-to-30/Day-20/orders.sql) |
+| **Day 22** | Spring Data JPA and databases | 3 tests pass | [Day 22 Events API](Days-12-to-30/Day-22/events/) |
+| **Day 23** | Thymeleaf and validation | 8 tests pass | [Day 23 Events app](Days-12-to-30/Day-23/events/) |
+| **Day 24** | REST CRUD and error handling | 16 tests pass | [Day 24 Events app](Days-12-to-30/Day-24/events/) |
+| **Day 25** | Testing APIs | 25 tests pass; city-filter fix was demonstrated test-first | [Day 25 Events app](Days-12-to-30/Day-25/events/) |
+| **Day 26** | Search, branching, and CI | 27 tests pass; GitHub PR/review not performed | [Day 26 Events app](Days-12-to-30/Day-26/events/) |
+| **Day 27** | Packaging and deployment preparation | 27 Events tests pass; Docker/Render deployment not verified live | [Day 27 projects](Days-12-to-30/Day-27/) |
+| **Day 29–30** | Student Event Registration capstone | 16 automated tests plus real HTTP API tests pass | [Capstone 1](capstone1/registration/) |
 
 ## Day 01 — What Is Java Full Stack Development?
 
@@ -1345,6 +1392,10 @@ Day 11 helped me build on Spring Boot basics by returning JSON records, mapping 
 | Day 06 | SQLite SQL basics, table constraints, inserting and querying records, sorting, filtering, limiting, counting, updating, and deleting. |
 | Day 08 | Backend responsibilities, Spring Boot controller mappings, project structure, three-layer architecture, server-side validation, and REST routes. |
 | Day 11 | Spring Boot JSON APIs, HTTP status codes, request validation, event filtering/deletion, and a Courses API verified by the official checker. |
+| Days 12–13 | Git commit/recovery practice is local; remote collaboration requires GitHub authentication and remains incomplete. |
+| Days 15–20 | Java collections, methods, classes, HTML forms/tables, CSS, SQL filtering, and aggregation. |
+| Days 22–27 | Separate JPA, Thymeleaf, REST CRUD, test-first, search, Actuator, and deployment-preparation versions of the Events sample. |
+| Days 29–30 | Integrated student registration capstone with student pages, admin pages, and privacy-safe REST DTOs. |
 
 ## Projects
 
@@ -1361,9 +1412,10 @@ The current work supports the following introductory skills. Conceptual topics a
 | Area | Skills evidenced by the completed work |
 | --- | --- |
 | **Frontend Development** | Explain the roles of HTML, CSS, and JavaScript; identify frontend responsibilities; inspect page structure and browser messages with DevTools; document semantic HTML pages, accessible images, and links. |
-| **Backend Development** | Write Java console programs; build Spring Boot JSON APIs with controllers, request records, validation, and HTTP responses. The Day 11 sample APIs use in-memory data. |
-| **Database Management** | Explain database tables and relationships, compare SQL and NoSQL, write MySQL-compatible schema examples with keys and constraints, and model canteen, library, and event-portal data. The Day 11 APIs are not connected to a persistent database. |
-| **Development Tools** | Use browser DevTools concepts and work with Java source files in this repository. Maven and IntelliJ IDEA are introduced in the Day 01 notes. |
+| **Backend Development** | Write Java console programs; build Spring Boot APIs with JPA, service layers, request validation, ProblemDetail responses, and Thymeleaf pages. Day 11 retains its original in-memory exercise; later project versions use H2. |
+| **Database Management** | Explain relational design and practice SQL filtering/aggregation; persist courses and events with Spring Data JPA and H2 in later projects. |
+| **Testing** | Write JUnit 5 and AssertJ checks, MockMvc tests, and real HTTP API tests against isolated H2 test databases. |
+| **Development Tools** | Use Maven wrappers, local Git history and GitHub Actions CI configuration. Dockerfiles and a Render blueprint are prepared; actual deployment remains unverified. |
 | **Problem Solving** | Break down URLs and HTTP responses, trace request flow, validate input, apply calculation rules, and check Java exercises against sample cases. |
 
 Day 06 additionally practises SQLite CRUD queries and constraints.
@@ -1371,6 +1423,8 @@ Day 06 additionally practises SQLite CRUD queries and constraints.
 Day 08 additionally documents backend request handling, application layers, validation, and REST endpoint design.
 
 Day 11 additionally practises Spring Boot JSON APIs, HTTP response codes, request validation, and official checker-based verification.
+
+Days 15–20 add Java collections and methods, accessible HTML forms, responsive CSS, and executable SQLite filtering and aggregation exercises. Days 22–27 preserve each Events API milestone as a distinct application folder. Capstone 1 is a separate integrated project and does not replace those samples or the Day 09 courses application.
 
 ## Repository Structure
 
@@ -1421,13 +1475,29 @@ Day 11 additionally practises Spring Boot JSON APIs, HTTP response codes, reques
 │   ├── 05-library-api-endpoints.md
 │   ├── 06-college-event-portal-routes.md
 │   └── lab-notes.md
+├── Days-12-to-30/
+│   ├── Day-15/                 # Java loops and collections
+│   ├── Day-16/                 # Java methods and classes
+│   ├── Day-17/                 # HTML forms and tables
+│   ├── Day-18/                 # CSS pages and styles
+│   ├── Day-19/products.sql     # SQL filtering and sorting
+│   ├── Day-20/orders.sql       # SQL aggregation
+│   ├── Day-22/events/          # JPA Events API
+│   ├── Day-23/events/          # Thymeleaf and validation
+│   ├── Day-24/events/          # REST CRUD and ProblemDetail
+│   ├── Day-25/events/          # Unit, service, and HTTP tests
+│   ├── Day-26/events/          # Event search and CI
+│   └── Day-27/                 # Events deployment prep and Hello API
 ├── day09/
 │   ├── CheckLab.java
 │   ├── campusevents/
+│   │   ├── README.md
 │   │   ├── pom.xml
+│   │   ├── Dockerfile
 │   │   └── src/main/java/in/synkoc/campusevents/
 │   │       ├── Course.java
 │   │       ├── CourseController.java
+│   │       ├── CourseRepository.java
 │   │       ├── CourseRequest.java
 │   │       └── HomeController.java
 │   └── hello/
@@ -1440,14 +1510,15 @@ Day 11 additionally practises Spring Boot JSON APIs, HTTP response codes, reques
 │           ├── EventController.java
 │           ├── EventRequest.java
 │           └── EventsApplication.java
-└── day02/
-    ├── CheckLab.java
-    ├── FeeCalculator.java
-    ├── Grade.java
-    ├── Greeting.java
-    ├── MyApp.java
-    ├── Receipt.java
-    └── Variables.java
+├── day02/
+│   ├── CheckLab.java
+│   ├── FeeCalculator.java
+│   ├── Grade.java
+│   ├── Greeting.java
+│   ├── MyApp.java
+│   ├── Receipt.java
+│   └── Variables.java
+└── capstone1/registration/     # Integrated Student Event Registration App
 ```
 
 Day 03, Day 04, and Day 05's complete written lab documentation is included above in this master README. The practical files are grouped in their day folders; there are no per-day README files.
@@ -1456,7 +1527,7 @@ Day 06's complete written lab documentation is also included above; its practica
 
 Day 08's complete written lab documentation is included above, with supporting notes in `Day-08/`.
 
-Day 11's complete documentation is included above. Its official checker is alongside the Maven application in `day11/`; the Courses API additions are in the existing Day 09 `campusevents` app. No separate day README files are used.
+Day 11's complete documentation is included above. Its official checker is alongside the Maven application in `day11/`; the Courses API additions are in the existing Day 09 `campusevents` app. Project-specific READMEs are kept beside the capstone and the Day 09 Maven project; standalone exercise folders do not receive unnecessary README copies.
 
 ## Learning Outcomes
 
@@ -1470,7 +1541,7 @@ Day 11 adds working JSON APIs in the Day 11 events app and the Day 09 Courses ap
 
 ## Future Learning
 
-Additional internship days will be documented directly in this master README as their work becomes available. The roadmap and learning progress sections will be updated for each completed day. No per-day README files are needed.
+Some remote collaboration and deployment tasks still need account authorization. The GitHub CLI in the implementation environment is not logged in, and no Render service has been deployed or verified. The code, local tests, and configuration prepared here do not imply that those external milestones are complete.
 
 ## Author
 

@@ -49,4 +49,14 @@ Tests use a separate in-memory H2 database, so they do not reset or replace your
 The public registration API intentionally omits email addresses. The `/admin` pages are provided for this training project; authentication and authorization must be added before deploying an admin dashboard in a real production environment.
 
 **Author:** Rashi Mishra  
-**Demo video:** Link to be added when a real demo video is available.
+**Demo video:** To be added after the real video is recorded and uploaded.
+
+## 2–3 minute demo outline
+
+1. Browse the upcoming events and point out the two seats available for Resume Clinic.
+2. Submit the registration form once, then show the confirmation number and saved name.
+3. Submit the same email again to show the duplicate-registration message.
+4. Register a second email and show the event becomes full; demonstrate that another registration is rejected.
+5. Open `/admin/events` and the event's registration list to show the admin view.
+6. Open `/api/events` and `/api/events/{id}/registrations`; point out that the public response contains no email field.
+7. Finish by running `./mvnw test` and showing the successful test summary.

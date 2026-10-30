@@ -2,9 +2,79 @@ name: CI
 
 on:
   push:
+    branches:
+      - main
   pull_request:
 
 jobs:
+  internship-courses:
+    name: internship-courses
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: day09/campusevents
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: day09/campusevents/pom.xml
+      - name: Run tests
+        run: ./mvnw -B test
+  day11-events:
+    name: day11-events
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: day11/events
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: day11/events/pom.xml
+      - name: Run tests
+        run: ./mvnw -B test
+  day22-events:
+    name: day22-events
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Days-12-to-30/Day-22/events
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: Days-12-to-30/Day-22/events/pom.xml
+      - name: Run tests
+        run: ./mvnw -B test
+  day26-events:
+    name: day26-events
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Days-12-to-30/Day-26/events
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: Days-12-to-30/Day-26/events/pom.xml
+      - name: Run tests
+        run: ./mvnw -B test
   capstone:
     name: capstone
     runs-on: ubuntu-latest
