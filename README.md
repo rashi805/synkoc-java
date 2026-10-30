@@ -15,6 +15,7 @@ Welcome to my learning repository for the **SYNKOC Java Full Stack Development i
 - [Day 02 — Complete Documentation](#day-02--java-fundamentals-and-console-programs)
 - [Day 03 — Complete Documentation](#day-03--lab-how-the-web-works)
 - [Day 04 — Complete Documentation](#day-04--html-basics)
+- [Day 05 — Complete Documentation](#day-05--what-is-a-database)
 - [Learning Progress](#learning-progress)
 - [Projects](#projects)
 - [Skills Developed](#skills-developed)
@@ -25,7 +26,7 @@ Welcome to my learning repository for the **SYNKOC Java Full Stack Development i
 
 ## About the Internship
 
-This repository documents my progress through the SYNKOC Java Full Stack Development internship. It is a central place to follow the concepts introduced, review practical exercises, and navigate the work completed on each day. The current material covers web application fundamentals, browser tooling, and introductory Java programming.
+This repository documents my progress through the SYNKOC Java Full Stack Development internship. It is a central place to follow the concepts introduced, review practical exercises, and navigate the work completed on each day. The current material covers web application fundamentals, browser tooling, introductory Java programming, and database concepts and schema design.
 
 ## Technology Stack
 
@@ -38,7 +39,7 @@ The Day 01 technology notes introduce the full-stack tools below. The status col
 | --- | --- | --- |
 | **Frontend** | HTML, CSS, JavaScript | Introduced in the Day 01 technology overview; no frontend implementation is included yet. |
 | **Backend** | Java, Spring Boot, Spring Data JPA | Java is used in the Day 02 console exercises. Spring Boot and Spring Data JPA are introduced in Day 01 notes; no backend application is included yet. |
-| **Database** | SQL, MySQL, H2 | Introduced in the Day 01 technology overview; the current work does not include database queries or configuration. |
+| **Database** | SQL, MySQL, H2 | Introduced in the Day 01 technology overview; Day 05 includes MySQL-compatible schema examples and relationship exercises, but no live database connection is configured. |
 | **Tools** | Maven, Git, GitHub, IntelliJ IDEA | Maven and IntelliJ IDEA are introduced in the Day 01 notes. The existing root README also identified Git and GitHub Codespaces; this repository is hosted on GitHub. |
 
 ## Daily Learning Roadmap
@@ -49,6 +50,7 @@ The Day 01 technology notes introduce the full-stack tools below. The status col
 | **Day 02** | Java fundamentals and console programs | Completed | [Day 02 lab files](day02/) |
 | **Day 03** | How the Web Works browser lab | Completed | [Day 03 documentation](#day-03--lab-how-the-web-works) |
 | **Day 04** | HTML Basics | Completed | [Day 04 documentation](#day-04--html-basics) |
+| **Day 05** | What Is a Database | Completed | [Day 05 documentation](#day-05--what-is-a-database) |
 
 ## Day 01 — What Is Java Full Stack Development?
 
@@ -560,6 +562,168 @@ By completing Day 04, I learned to:
 - **Checks passed:** 6/6
 - **Completion code:** `JFS-D04-50MUCI`
 
+## Day 05 — What Is a Database
+
+- **Day:** 05
+- **Title:** What Is a Database
+- **Lab ID:** JFS-M3-01
+- **Status:** Completed
+- **Checks passed:** 6/6
+
+Day 05 introduced databases and relational design. The lab explored sample students, courses, and enrollments; identified keys and relationships; compared SQL and NoSQL; and designed schemas for a canteen, a library, and a college event portal.
+
+### Part A — Database Concepts and Canteen
+
+#### A1 — Explore a Sample Database
+
+A **database** is an organized collection of information that can be stored, searched, changed, and managed. A relational database organizes information in **tables**. A table contains **columns** (the attributes, or fields) and **rows** (individual records). For example, each row in `students` describes one student, and its columns can include `id`, `name`, and `city`.
+
+The sample relational database uses three tables:
+
+| Table | Example columns | Purpose |
+| --- | --- | --- |
+| `students` | `id`, `name`, `city` | Stores each student. |
+| `courses` | `id`, `title` | Stores each course. |
+| `enrollments` | `id`, `student_id`, `course_id` | Connects students with courses. |
+
+The lab's actual query results were:
+
+| Question | Result |
+| --- | --- |
+| Bengaluru students | 3 |
+| Course with ID 3 | Cloud Basics |
+| Students enrolled in Java Full Stack | 3 |
+| Student without a course | Kiran Gowda |
+| Arjun Rao's courses | Data Science and Cloud Basics |
+
+For example, the course lookup and a student's course list use these joins:
+
+```sql
+SELECT title
+FROM courses
+WHERE id = 3;
+
+SELECT c.title
+FROM students AS s
+JOIN enrollments AS e ON e.student_id = s.id
+JOIN courses AS c ON c.id = e.course_id
+WHERE s.name = 'Arjun Rao';
+```
+
+The [database basics practical](Day-05/database-basics.md) includes SQL examples for all five lab results.
+
+#### A2 — Identify the Keys
+
+A **primary key (PK)** uniquely identifies a row in its table. A **foreign key (FK)** refers to a key in another table and helps keep related records valid.
+
+| Table | Primary key | Foreign key |
+| --- | --- | --- |
+| `students` (`id`, `name`, `city`) | `id` | — |
+| `courses` (`id`, `title`) | `id` | — |
+| `enrollments` (`id`, `student_id`, `course_id`) | `id` | `student_id` → `students.id`; `course_id` → `courses.id` |
+| `payments` (`id`, `student_id`, `amount`) | `id` | `student_id` → `students.id` |
+
+Each enrollment belongs to one student and one course. A student can have multiple enrollments, and a course can have multiple enrollments. Therefore, `enrollments` models the many-to-many relationship between students and courses. A student can also have multiple payment records; each payment references one student. See [keys-and-relationships.md](Day-05/keys-and-relationships.md) for a SQL definition example.
+
+#### A3 — Compare SQL and NoSQL
+
+**Relational SQL databases** use defined tables, constraints, and relationships. SQL supports queries and joins across those tables. **NoSQL document databases** store JSON-like documents and can allow documents in a collection to have different fields.
+
+| Lab scenario | Typical choice |
+| --- | --- |
+| Bank balances and transfers | SQL |
+| Flexible product catalogue | NoSQL document database |
+| Train seat bookings | SQL |
+| Millions of smart meter readings | NoSQL |
+| Fixed columns | SQL |
+| Flexible JSON documents | NoSQL document database |
+| Foreign keys and joins | SQL |
+| Records with different fields | NoSQL document database |
+
+These are typical choices, not absolute rules. SQL databases can support JSON data, and some NoSQL systems support transactions. The right choice depends on consistency requirements, query patterns, data shape, and scale. The full comparison is in [sql-vs-nosql.md](Day-05/sql-vs-nosql.md).
+
+#### A4 — Canteen Database
+
+The canteen schema contains:
+
+| Table | Columns |
+| --- | --- |
+| `students` | `id`, `name`, `email` |
+| `menu_items` | `id`, `name`, `price`, `is_veg` |
+| `orders` | `id`, `student_id`, `order_date`, `total_price` |
+| `order_items` | `id`, `order_id`, `menu_item_id`, `quantity` |
+
+`orders.student_id` references `students.id`, so a student can place multiple orders. `order_items.order_id` references an order and `order_items.menu_item_id` references a menu item. Each order can contain multiple menu items, and a menu item can appear in many orders; `order_items` represents that many-to-many relationship and records the quantity.
+
+For example, the key relationships can be declared as:
+
+```sql
+FOREIGN KEY (student_id) REFERENCES students(id);
+FOREIGN KEY (order_id) REFERENCES orders(id);
+FOREIGN KEY (menu_item_id) REFERENCES menu_items(id);
+```
+
+The complete schema, including data types and constraints, is in [canteen-database.sql](Day-05/canteen-database.sql).
+
+### Part B — Library Database
+
+The library schema contains:
+
+| Table | Columns |
+| --- | --- |
+| `books` | `id`, `title`, `author` |
+| `members` | `id`, `name`, `member_type` |
+| `loans` | `id`, `book_id`, `member_id`, `borrow_date`, `due_date`, `return_date` |
+
+Each loan references one book and one member. A book can appear in many loans over time, and a member can have many loans. The loan row records when the book was borrowed, when it is due, and—when returned—the return date. `return_date` can be `NULL` while the book is still on loan. The [library schema](Day-05/library-database.sql) includes the foreign keys and date constraints.
+
+### Part C — Internship Application: College Event Portal
+
+The internship application is a college event portal:
+
+| Table | Columns |
+| --- | --- |
+| `users` | `id`, `name`, `email`, `password` (conceptual credential input) |
+| `events` | `id`, `title`, `description`, `event_date`, `organizer_id` |
+| `registrations` | `id`, `user_id`, `event_id`, `registration_date` |
+
+A user can organize events, and each event's `organizer_id` refers to its organizer in `users`. Users register for events through `registrations`: each registration references one user and one event. The user-to-event many-to-many relationship is represented by registration rows. A unique constraint on `(user_id, event_id)` prevents duplicate registrations for the same event.
+
+The actual SQL schema uses a `password_hash` column in `users`, not a plaintext `password` column. Applications must store password hashes rather than passwords. The complete [college event portal schema](Day-05/internship-app-database.sql) includes the primary keys, foreign keys, data types, and constraints.
+
+### Day 05 Learning Outcomes
+
+By completing Day 05, I learned to:
+
+- Explain what a database is and distinguish tables, rows, and columns.
+- Explore related sample tables and use SQL joins to answer questions.
+- Identify primary keys and foreign keys and describe the relationships they enforce.
+- Compare relational SQL databases and NoSQL document databases using common scenarios.
+- Design tables and choose data types, uniqueness rules, checks, and foreign-key constraints.
+- Model canteen orders, library loans, and event registrations using related tables.
+- Store password hashes rather than plaintext passwords in an application schema.
+
+The SQL scripts are MySQL 8.0.16+ schema examples; they do not configure or connect to a live database.
+
+### Day 05 Practical Files
+
+- [Database basics and sample lab results](Day-05/database-basics.md)
+- [Keys and relationships](Day-05/keys-and-relationships.md)
+- [SQL vs NoSQL](Day-05/sql-vs-nosql.md)
+- [Canteen database schema](Day-05/canteen-database.sql)
+- [Library database schema](Day-05/library-database.sql)
+- [College event portal schema](Day-05/internship-app-database.sql)
+- [Day 05 lab notes and completion details](Day-05/lab-notes.md)
+
+### Day 05 Completion Details
+
+- **Day:** 05
+- **Title:** What Is a Database
+- **Lab ID:** JFS-M3-01
+- **Status:** Completed
+- **Checks passed:** 6/6
+- **Completion code:** `JFS-D05-66MJVQ`
+
 ## Learning Progress
 
 | Day | Main learning |
@@ -568,6 +732,7 @@ By completing Day 04, I learned to:
 | Day 02 | Java data types, console input/output, conditional logic, validation, formatted calculations, and a console application outline. |
 | Day 03 | HTML/CSS inspection, Network monitoring, status codes, the Console, DNS/HTTP, DOM/CSSOM, rendering, and API communication. |
 | Day 04 | HTML document structure, links, accessible images, semantic elements, profile-page content, and the CampusEvents homepage. |
+| Day 05 | Database tables, sample SQL queries and joins, primary and foreign keys, SQL vs NoSQL, and relational schema design. |
 
 ## Projects
 
@@ -585,7 +750,7 @@ The current work supports the following introductory skills. Conceptual topics a
 | --- | --- |
 | **Frontend Development** | Explain the roles of HTML, CSS, and JavaScript; identify frontend responsibilities; inspect page structure and browser messages with DevTools; document semantic HTML pages, accessible images, and links. |
 | **Backend Development** | Explain backend responsibilities and request handling at a conceptual level; write Java console programs using variables, input/output, and conditional logic. No Spring Boot service is implemented yet. |
-| **Database Management** | Explain the database's role in a web application and outline entities and relationships during CampusConnect planning. No database is configured or queried in the current work. |
+| **Database Management** | Explain database tables and relationships, compare SQL and NoSQL, write MySQL-compatible schema examples with keys and constraints, and model canteen, library, and event-portal data. No live database is configured. |
 | **Development Tools** | Use browser DevTools concepts and work with Java source files in this repository. Maven and IntelliJ IDEA are introduced in the Day 01 notes. |
 | **Problem Solving** | Break down URLs and HTTP responses, trace request flow, validate input, apply calculation rules, and check Java exercises against sample cases. |
 
@@ -614,6 +779,14 @@ The current work supports the following introductory skills. Conceptual topics a
 │   ├── index.html
 │   └── personal-profile.html
 ├── Day-03/
+├── Day-05/
+│   ├── canteen-database.sql
+│   ├── database-basics.md
+│   ├── internship-app-database.sql
+│   ├── keys-and-relationships.md
+│   ├── lab-notes.md
+│   ├── library-database.sql
+│   └── sql-vs-nosql.md
 └── day02/
     ├── CheckLab.java
     ├── FeeCalculator.java
@@ -624,11 +797,11 @@ The current work supports the following introductory skills. Conceptual topics a
     └── Variables.java
 ```
 
-Day 03 and Day 04's complete written lab documentation is included above in this master README. The `Day-04/` folder contains the HTML practicals, and the `Day-03/` folder has no separate README.
+Day 03, Day 04, and Day 05's complete written lab documentation is included above in this master README. The practical files are grouped in their day folders; there are no per-day README files.
 
 ## Learning Outcomes
 
-Across the completed days, I have documented how the frontend, backend, and database relate; how to inspect HTML and CSS with browser DevTools; how to monitor network requests and interpret HTTP status codes; how to use the JavaScript Console; and how DNS, HTTP, DOM, CSSOM, browser rendering, and API requests fit together. Day 02 adds Java practice with data types, console interaction, conditionals, input checks, and formatted fee calculations. Day 04 adds foundational HTML, semantic page structure, accessible links and images, a profile page, and the CampusEvents homepage. The CampusConnect plan applies full-stack concepts to a proposed application without representing it as implemented.
+Across the completed days, I have documented how the frontend, backend, and database relate; how to inspect HTML and CSS with browser DevTools; how to monitor network requests and interpret HTTP status codes; how to use the JavaScript Console; and how DNS, HTTP, DOM, CSSOM, browser rendering, and API requests fit together. Day 02 adds Java practice with data types, console interaction, conditionals, input checks, and formatted fee calculations. Day 04 adds foundational HTML, semantic page structure, accessible links and images, a profile page, and the CampusEvents homepage. The CampusConnect plan applies full-stack concepts to a proposed application without representing it as implemented. Day 05 adds relational table design, keys and relationships, SQL/NoSQL comparisons, and MySQL-compatible schemas for canteen, library, and college event portal data.
 
 ## Future Learning
 
