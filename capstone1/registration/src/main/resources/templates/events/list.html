@@ -30,21 +30,24 @@
 			<div><p class="eyebrow eyebrow-dark">THE CAMPUS CALENDAR</p><h2>Coming up</h2></div>
 			<p class="section-note">A little inspiration is just around the corner.</p>
 		</div>
-		<div class="event-grid" th:if="${!#lists.isEmpty(events)}">
-			<article class="event-card" th:each="event, loop : ${events}">
-				<div class="event-card-top">
-					<span class="event-index" th:text="${#numbers.formatInteger(loop.index + 1, 2)}">01</span>
-					<span class="status-pill" th:if="${event.seatsLeft > 0}"><span class="status-dot"></span> OPEN</span>
-					<span class="status-pill status-full" th:if="${event.seatsLeft == 0}">FULL</span>
-				</div>
-				<p class="event-date" th:text="${#temporals.format(event.date, 'EEEE, MMMM d, yyyy')}">Monday, September 15, 2025</p>
-				<h3 th:text="${event.title}">Event title</h3>
-				<p class="event-venue"><span aria-hidden="true">↗</span> <span th:text="${event.venue}">Venue</span></p>
-				<div class="event-card-bottom">
-					<div><span class="capacity-number" th:text="${event.seatsLeft}">12</span><span class="capacity-label"> seats left</span><span class="capacity-total" th:text="' / ' + ${event.capacity} + ' spots'"> / 40 spots</span></div>
-					<a class="text-link" th:href="@{/events/{id}/register(id=${event.id})}" th:classappend="${event.seatsLeft == 0} ? ' link-disabled' : ''" th:attr="aria-disabled=${event.seatsLeft == 0}">Register <span aria-hidden="true">↗</span></a>
-				</div>
-			</article>
+		<div class="table-wrap event-table-wrap" th:if="${!#lists.isEmpty(events)}">
+			<table class="event-table">
+				<thead><tr><th>EVENT</th><th>DATE</th><th>VENUE</th><th>CAPACITY</th><th>SEATS LEFT</th><th>STATUS</th><th></th></tr></thead>
+				<tbody>
+					<tr th:each="event : ${events}">
+						<td class="table-event" th:text="${event.title}">Event title</td>
+						<td th:text="${#temporals.format(event.date, 'EEEE, MMMM d, yyyy')}">Monday, September 15, 2025</td>
+						<td th:text="${event.venue}">Venue</td>
+						<td th:text="${event.capacity}">40</td>
+						<td class="registered-count" th:text="${event.seatsLeft}">12</td>
+						<td>
+							<span class="status-pill" th:if="${event.seatsLeft > 0}"><span class="status-dot"></span> OPEN</span>
+							<span class="status-pill status-full" th:if="${event.seatsLeft == 0}">FULL</span>
+						</td>
+						<td><a class="text-link" th:href="@{/events/{id}/register(id=${event.id})}" th:classappend="${event.seatsLeft == 0} ? ' link-disabled' : ''" th:attr="aria-disabled=${event.seatsLeft == 0}">Register <span aria-hidden="true">↗</span></a></td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 		<div class="empty-state" th:if="${#lists.isEmpty(events)}">
 			<span class="empty-icon">✳</span><h3>Nothing on the calendar just yet</h3><p>Check back soon for events to explore.</p>

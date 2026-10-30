@@ -1,5 +1,5 @@
 target/
-data/
+/data/
 *.mv.db
 *.trace.db
 .idea/

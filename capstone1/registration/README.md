@@ -49,7 +49,7 @@ Tests use a separate in-memory H2 database, so they do not reset or replace your
 The public registration API intentionally omits email addresses. The `/admin` pages are provided for this training project; authentication and authorization must be added before deploying an admin dashboard in a real production environment.
 
 **Author:** Rashi Mishra  
-**Demo video:** To be added after the real video is recorded and uploaded.
+**Demo video:** [Watch the Student Event Registration App demo](https://youtu.be/Ko7NY7sCKuA?feature=shared)
 
 ## 2–3 minute demo outline
 
