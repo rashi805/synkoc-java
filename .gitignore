@@ -1,6 +1,8 @@
 # Java build output and local databases
 **/target/
 **/data/
+!**/src/main/java/**/data/
+!**/src/main/java/**/data/**
 *.class
 *.mv.db
 *.trace.db
