@@ -4,3 +4,11 @@ target/
 *.trace.db
 .idea/
 .vscode/
+*.log
+*.tmp
+*.swp
+.DS_Store
+Thumbs.db
+.env
+.env.*
+!.env.example

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title th:text="${event.title} + ' | CampusConnect'">Event details | CampusConnect</title>
+	<link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="page-background">
+<header class="topbar"><div class="container" th:replace="~{fragments/navigation :: navigation}"></div></header>
+<main class="container detail-layout">
+	<a class="back-link" th:href="@{/events}">← Back to events</a>
+	<article class="event-detail">
+		<p class="eyebrow eyebrow-dark">CAMPUS EVENT</p>
+		<h1 th:text="${event.title}">Event title</h1>
+		<p class="detail-date" th:text="${#temporals.format(event.date, 'EEEE, MMMM d, yyyy')}">Event date</p>
+		<dl class="detail-facts">
+			<div><dt>Venue</dt><dd th:text="${event.venue}">Venue</dd></div>
+			<div><dt>Capacity</dt><dd th:text="${event.capacity}">40</dd></div>
+			<div><dt>Seats remaining</dt><dd th:text="${event.seatsLeft}">12</dd></div>
+		</dl>
+		<p class="alert alert-error" role="status" th:if="${!registrationOpen}"
+			 th:text="${event.seatsLeft == 0} ? 'This event is full.' : 'Registration is closed because this event has already taken place.'">
+			Registration is closed.
+		</p>
+		<a class="button button-dark" th:if="${registrationOpen}"
+			 th:href="@{/events/{id}/register(id=${event.id})}">Register for this event <span aria-hidden="true">↗</span></a>
+	</article>
+</main>
+<footer class="footer"><div class="container footer-inner"><span>CampusConnect · Made for campus life</span><a th:href="@{/events}">Browse events</a></div></footer>
+</body>
+</html>

@@ -8,6 +8,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "events")
@@ -17,15 +21,21 @@ public class Event {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false)
+	@NotBlank
+	@Size(max = 120)
+	@Column(nullable = false, length = 120)
 	private String title;
 
-	@Column(nullable = false)
+	@NotBlank
+	@Size(max = 120)
+	@Column(nullable = false, length = 120)
 	private String venue;
 
+	@NotNull
 	@Column(nullable = false)
 	private LocalDate date;
 
+	@Min(1)
 	@Column(nullable = false)
 	private int capacity;
 

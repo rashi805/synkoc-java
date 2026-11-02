@@ -67,6 +67,29 @@ class StudentEventRegistrationTests {
 	}
 
 	@Test
+	void eventSearchFiltersByTitleOrVenueWithoutCaseSensitivity() throws Exception {
+		mockMvc.perform(get("/events").param("query", "LIBRARY"))
+				.andExpect(status().isOk())
+				.andExpect(content().string(org.hamcrest.Matchers.containsString("Study Jam")))
+				.andExpect(content().string(org.hamcrest.Matchers.not(
+						org.hamcrest.Matchers.containsString("Resume Clinic"))));
+
+		mockMvc.perform(get("/events").param("query", "resume"))
+				.andExpect(status().isOk())
+				.andExpect(content().string(org.hamcrest.Matchers.containsString("Resume Clinic")))
+				.andExpect(content().string(org.hamcrest.Matchers.not(
+						org.hamcrest.Matchers.containsString("Study Jam"))));
+	}
+
+	@Test
+	void eventSearchShowsHelpfulEmptyState() throws Exception {
+		mockMvc.perform(get("/events").param("query", "does-not-exist"))
+				.andExpect(status().isOk())
+				.andExpect(content().string(org.hamcrest.Matchers.containsString("No events match your search")))
+				.andExpect(content().string(org.hamcrest.Matchers.containsString("Try another event name or venue.")));
+	}
+
+	@Test
 	void initializerSeedsFourFutureEventsIncludingTwoSeatResumeClinicOnlyWhenEmpty() {
 		registrationRepository.deleteAll();
 		eventRepository.deleteAll();
@@ -92,16 +115,64 @@ class StudentEventRegistrationTests {
 				.andExpect(status().is3xxRedirection())
 				.andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl("/events"));
 
-		mockMvc.perform(get("/events"))
+		var eventListing = mockMvc.perform(get("/events"))
 				.andExpect(status().isOk())
 				.andExpect(content().string(org.hamcrest.Matchers.containsString("Resume Clinic")))
 				.andExpect(content().string(org.hamcrest.Matchers.containsString("2")))
 				.andExpect(content().string(org.hamcrest.Matchers.containsString("Admin dashboard")));
+		assertThat(eventListing.andReturn().getResponse().getContentAsString())
+				.contains("/events/" + resumeClinic.getId() + "/register");
+
+		mockMvc.perform(get("/events/{id}", resumeClinic.getId()))
+				.andExpect(status().isOk())
+				.andExpect(content().string(org.hamcrest.Matchers.containsString("Innovation Hub")))
+				.andExpect(content().string(org.hamcrest.Matchers.containsString("Register for this event")));
 
 		mockMvc.perform(get("/events/{id}/register", resumeClinic.getId()))
 				.andExpect(status().isOk())
 				.andExpect(content().string(org.hamcrest.Matchers.containsString("yearOfStudy")))
 				.andExpect(content().string(org.hamcrest.Matchers.containsString("Your details")));
+	}
+
+	@Test
+	void pastEventCannotBeRegisteredFor() throws Exception {
+		Event pastEvent = eventRepository.save(new Event("Past Meetup", "Old Hall",
+				LocalDate.now().minusDays(1), 10));
+
+		mockMvc.perform(get("/events/{id}/register", pastEvent.getId()))
+				.andExpect(status().is3xxRedirection())
+				.andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers
+						.redirectedUrl("/events/" + pastEvent.getId()));
+
+		mockMvc.perform(validRegistration(pastEvent.getId(), "student@example.com", "Student"))
+				.andExpect(status().isOk())
+				.andExpect(content().string(org.hamcrest.Matchers.containsString(
+						"Registration is closed because this event has already taken place.")));
+
+		assertThat(registrationRepository.countByEvent_Id(pastEvent.getId())).isZero();
+	}
+
+	@Test
+	void registrationValidationEnforcesEmailAndCollegeLengthLimits() throws Exception {
+		mockMvc.perform(post("/events/{id}/register", resumeClinic.getId())
+						.param("name", "Student")
+						.param("email", "a".repeat(243) + "@example.com")
+						.param("college", "Example College")
+						.param("yearOfStudy", "2"))
+				.andExpect(status().isOk())
+				.andExpect(content().string(org.hamcrest.Matchers.containsString(
+						"Email address must be 254 characters or fewer.")));
+
+		mockMvc.perform(post("/events/{id}/register", resumeClinic.getId())
+						.param("name", "Student")
+						.param("email", "student@example.com")
+						.param("college", "C".repeat(101))
+						.param("yearOfStudy", "2"))
+				.andExpect(status().isOk())
+				.andExpect(content().string(org.hamcrest.Matchers.containsString(
+						"College must be 100 characters or fewer.")));
+
+		assertThat(registrationRepository.count()).isZero();
 	}
 
 	@Test
@@ -176,7 +247,7 @@ class StudentEventRegistrationTests {
 				.andExpect(content().string(org.hamcrest.Matchers.containsString(
 						"This email address is already registered for this event.")));
 
-		assertThat(registrationRepository.countByEventId(resumeClinic.getId())).isEqualTo(1);
+		assertThat(registrationRepository.countByEvent_Id(resumeClinic.getId())).isEqualTo(1);
 	}
 
 	@Test
@@ -201,11 +272,13 @@ class StudentEventRegistrationTests {
 				.andExpect(content().string(org.hamcrest.Matchers.containsString(
 						"This event is full. No more registrations can be accepted.")));
 
-		assertThat(registrationRepository.countByEventId(resumeClinic.getId())).isEqualTo(2);
+		assertThat(registrationRepository.countByEvent_Id(resumeClinic.getId())).isEqualTo(2);
 		assertThat(eventService.toSummary(resumeClinic).seatsLeft()).isZero();
-		mockMvc.perform(get("/events"))
+		String eventListing = mockMvc.perform(get("/events"))
 				.andExpect(status().isOk())
-				.andExpect(content().string(org.hamcrest.Matchers.containsString("FULL")));
+				.andExpect(content().string(org.hamcrest.Matchers.containsString("FULL")))
+				.andReturn().getResponse().getContentAsString();
+		assertThat(eventListing).doesNotContain("/events/" + resumeClinic.getId() + "/register");
 	}
 
 	@Test
@@ -258,23 +331,26 @@ class StudentEventRegistrationTests {
 	}
 
 	@Test
-	void registrationsApiReturnsPrivacySafeDtoWithoutEmail() throws Exception {
+	void eventDetailApiReturnsOnlyEventInformation() throws Exception {
 		mockMvc.perform(validRegistration(resumeClinic.getId(), "private@example.com", "Student Name"))
 				.andExpect(status().is3xxRedirection());
 
-		mockMvc.perform(get("/api/events/{id}/registrations", resumeClinic.getId()))
+		mockMvc.perform(get("/api/events/{id}", resumeClinic.getId()))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$[0].name").value("Student Name"))
-				.andExpect(jsonPath("$[0].college").value("Example College"))
-				.andExpect(jsonPath("$[0].yearOfStudy").value(2))
-				.andExpect(jsonPath("$[0].email").doesNotExist())
-				.andExpect(content().string(org.hamcrest.Matchers.not(
-						org.hamcrest.Matchers.containsString("private@example.com"))));
+				.andExpect(jsonPath("$.title").value("Resume Clinic"))
+				.andExpect(jsonPath("$.venue").value("Innovation Hub"))
+				.andExpect(jsonPath("$.seatsLeft").value(1))
+				.andExpect(jsonPath("$.name").doesNotExist())
+				.andExpect(jsonPath("$.email").doesNotExist())
+				.andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString(
+						"Student Name"))))
+				.andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString(
+						"private@example.com"))));
 	}
 
 	@Test
 	void unknownApiEventReturnsProblemDetailAsProblemJson() throws Exception {
-		mockMvc.perform(get("/api/events/999999/registrations"))
+		mockMvc.perform(get("/api/events/999999"))
 				.andExpect(status().isNotFound())
 				.andExpect(content().contentType("application/problem+json"))
 				.andExpect(jsonPath("$.title").value("Event not found"))
