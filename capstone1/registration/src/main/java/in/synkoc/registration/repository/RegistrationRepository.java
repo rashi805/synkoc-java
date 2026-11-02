@@ -8,9 +8,9 @@ import in.synkoc.registration.model.Registration;
 
 public interface RegistrationRepository extends JpaRepository<Registration, Long> {
 
-	boolean existsByEventIdAndEmailIgnoreCase(Long eventId, String email);
+	boolean existsByEvent_IdAndEmailIgnoreCase(Long eventId, String email);
 
-	long countByEventId(Long eventId);
+	long countByEvent_Id(Long eventId);
 
-	List<Registration> findByEventIdOrderByIdAsc(Long eventId);
+	List<Registration> findByEvent_IdOrderByIdAsc(Long eventId);
 }

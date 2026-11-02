@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import in.synkoc.registration.dto.AdminEventSummary;
 import in.synkoc.registration.dto.EventSummary;
+import in.synkoc.registration.dto.RegistrationSummary;
 import in.synkoc.registration.exception.EventNotFoundException;
 import in.synkoc.registration.model.Event;
 import in.synkoc.registration.repository.EventRepository;
@@ -35,7 +36,7 @@ public class EventService {
 	public List<AdminEventSummary> adminEvents() {
 		return eventRepository.findAllByOrderByDateAsc().stream()
 				.map(event -> new AdminEventSummary(event.getId(), event.getTitle(), event.getDate(),
-						registrationRepository.countByEventId(event.getId()), event.getCapacity()))
+						registrationRepository.countByEvent_Id(event.getId()), event.getCapacity()))
 				.toList();
 	}
 
@@ -46,8 +47,16 @@ public class EventService {
 
 	@Transactional(readOnly = true)
 	public EventSummary toSummary(Event event) {
-		long registered = registrationRepository.countByEventId(event.getId());
+		long registered = registrationRepository.countByEvent_Id(event.getId());
 		return new EventSummary(event.getId(), event.getTitle(), event.getDate(), event.getVenue(),
 				event.getCapacity(), Math.max(0, event.getCapacity() - registered));
+	}
+
+	@Transactional(readOnly = true)
+	public RegistrationSummary registrationSummary(Long eventId) {
+		Event event = getEvent(eventId);
+		long registered = registrationRepository.countByEvent_Id(eventId);
+		return new RegistrationSummary(registered, event.getCapacity(),
+				Math.max(0, event.getCapacity() - registered));
 	}
 }

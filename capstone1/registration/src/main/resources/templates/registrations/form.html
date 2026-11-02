@@ -32,22 +32,22 @@
 				</div>
 				<div class="field">
 					<label for="name">Full name</label>
-					<input id="name" type="text" th:field="*{name}" maxlength="60" autocomplete="name" placeholder="e.g. Rashi Mishra">
+					<input id="name" type="text" th:field="*{name}" maxlength="60" autocomplete="name" placeholder="e.g. Rashi Mishra" required>
 					<p class="field-error" th:errors="*{name}"></p>
 				</div>
 				<div class="field">
 					<label for="email">Email address</label>
-					<input id="email" type="email" th:field="*{email}" autocomplete="email" placeholder="you@college.edu">
+					<input id="email" type="email" th:field="*{email}" maxlength="254" autocomplete="email" placeholder="you@college.edu" required>
 					<p class="field-error" th:errors="*{email}"></p>
 				</div>
 				<div class="field">
 					<label for="college">College</label>
-					<input id="college" type="text" th:field="*{college}" autocomplete="organization" placeholder="Your college or university">
+					<input id="college" type="text" th:field="*{college}" maxlength="100" autocomplete="organization" placeholder="Your college or university" required>
 					<p class="field-error" th:errors="*{college}"></p>
 				</div>
 				<div class="field">
 					<label for="yearOfStudy">Year of study</label>
-					<select id="yearOfStudy" th:field="*{yearOfStudy}">
+					<select id="yearOfStudy" th:field="*{yearOfStudy}" required>
 						<option value="">Choose your year</option>
 						<option value="1">Year 1</option><option value="2">Year 2</option>
 						<option value="3">Year 3</option><option value="4">Year 4</option>

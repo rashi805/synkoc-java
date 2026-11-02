@@ -15,9 +15,11 @@ public class RegistrationForm {
 
 	@NotBlank(message = "Please enter your email address.")
 	@Email(message = "Please enter a valid email address.")
+	@Size(max = 254, message = "Email address must be 254 characters or fewer.")
 	private String email;
 
 	@NotBlank(message = "Please enter your college.")
+	@Size(max = 100, message = "College must be 100 characters or fewer.")
 	private String college;
 
 	@NotNull(message = "Please choose your year of study.")

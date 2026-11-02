@@ -90,5 +90,5 @@ jobs:
           java-version: '21'
           cache: maven
           cache-dependency-path: capstone1/registration/pom.xml
-      - name: Run tests
-        run: ./mvnw -B test
+      - name: Build and test
+        run: ./mvnw -B clean verify
