@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import in.synkoc.registration.dto.EventSummary;
-import in.synkoc.registration.dto.RegistrationSummary;
+import in.synkoc.registration.dto.RegistrationResponse;
 import in.synkoc.registration.service.EventService;
 
 @RestController
@@ -32,7 +32,7 @@ public class EventApiController {
 	}
 
 	@GetMapping("/{id}/registrations")
-	public RegistrationSummary getRegistrationSummary(@PathVariable Long id) {
-		return eventService.registrationSummary(id);
+	public List<RegistrationResponse> getRegistrations(@PathVariable Long id) {
+		return eventService.registrationsForEvent(id);
 	}
 }

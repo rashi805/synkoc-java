@@ -22,8 +22,9 @@ registration review into one small application.
 - Close registrations for events that have already taken place.
 - Show a registration confirmation after a successful sign-up.
 - Review event counts and student rosters in the admin pages.
-- Return event summaries and aggregate registration counts through the public
-  REST API; no individual student details are exposed there.
+- Return event summaries and a checker-required registration list without
+  student email addresses. The registration list includes names, colleges,
+  and years of study and is only for fictional academic-demo data.
 - Seed four sample future events the first time the database is empty.
 
 The admin pages are not protected by authentication. They are intended for
@@ -57,9 +58,9 @@ Spring Data repositories
 H2 database
 ```
 
-Thymeleaf renders the browser pages. REST controllers return event DTOs and
-aggregate registration counts rather than database entities, so the public
-API does not serialize individual registration records.
+Thymeleaf renders the browser pages. REST controllers return DTOs rather than
+database entities. The registration-list API intentionally returns limited
+student details for the academic checker and does not include email addresses.
 
 See [docs/PROJECT_OVERVIEW.md](docs/PROJECT_OVERVIEW.md) for the application
 workflow, data model, and design decisions. Actual routes and response
@@ -119,7 +120,7 @@ URLs use sequential registration IDs, so they are not private links.
 | GET | `/admin/events/{id}/registrations` | View an event's admin roster |
 | GET | `/api/events` | List upcoming event summaries |
 | GET | `/api/events/{id}` | Get one event summary |
-| GET | `/api/events/{id}/registrations` | Get aggregate registration count and remaining seats; no student details |
+| GET | `/api/events/{id}/registrations` | List registration IDs, names, colleges, and years of study; excludes email |
 
 Full requests, responses, statuses, and privacy notes are in
 [docs/API_DOCUMENTATION.md](docs/API_DOCUMENTATION.md).
@@ -143,6 +144,9 @@ uses the local `sa` account with an empty password, and confirmation IDs are
 sequential. The loopback binding prevents remote network access by default,
 but does not protect data from other users or processes on the same machine.
 Do not put real personal or confidential information into this instance.
+The registration-list API returns student names, colleges, and years of study
+to satisfy the academic checker. Use only fictional demo registrations; do not
+deploy or expose this endpoint publicly with real student data.
 
 ## Tests
 

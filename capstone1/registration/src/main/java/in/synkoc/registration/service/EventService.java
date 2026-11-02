@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import in.synkoc.registration.dto.AdminEventSummary;
 import in.synkoc.registration.dto.EventSummary;
-import in.synkoc.registration.dto.RegistrationSummary;
+import in.synkoc.registration.dto.RegistrationResponse;
 import in.synkoc.registration.exception.EventNotFoundException;
 import in.synkoc.registration.model.Event;
 import in.synkoc.registration.repository.EventRepository;
@@ -53,10 +53,11 @@ public class EventService {
 	}
 
 	@Transactional(readOnly = true)
-	public RegistrationSummary registrationSummary(Long eventId) {
-		Event event = getEvent(eventId);
-		long registered = registrationRepository.countByEvent_Id(eventId);
-		return new RegistrationSummary(registered, event.getCapacity(),
-				Math.max(0, event.getCapacity() - registered));
+	public List<RegistrationResponse> registrationsForEvent(Long eventId) {
+		getEvent(eventId);
+		return registrationRepository.findByEvent_IdOrderByIdAsc(eventId).stream()
+				.map(registration -> new RegistrationResponse(registration.getId(), registration.getName(),
+						registration.getCollege(), registration.getYearOfStudy()))
+				.toList();
 	}
 }

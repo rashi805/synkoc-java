@@ -1,8 +1,11 @@
 # API and Route Documentation
 
-The REST API returns event summaries only. It does not expose a public student
-registration roster. Dates are serialized as ISO-8601 strings (`YYYY-MM-DD`).
-Unknown event IDs return an RFC 7807-style problem response.
+The REST API returns event summaries and a limited registration roster for
+the academic checker. The roster omits email addresses but includes student
+names, colleges, and years of study. Use only fictional demo data and do not
+expose this endpoint publicly with real student information. Dates are
+serialized as ISO-8601 strings (`YYYY-MM-DD`). Unknown event IDs return an
+RFC 7807-style problem response.
 
 ## REST endpoints
 
@@ -88,14 +91,15 @@ date.
 
 ### `GET /api/events/{id}/registrations`
 
-Returns an aggregate summary for registrations associated with one event. It
-does not return a registration list, student names, email addresses, college
-names, year of study, or registration IDs.
+Returns registrations associated with one event, ordered by registration ID.
+Each item contains exactly `id`, `name`, `college`, and `yearOfStudy`.
+Email addresses are not included. An event with no registrations returns an
+empty JSON array.
 
 - **Path parameter:** `id` — event identifier.
 - **Query parameters:** None.
 - **Request body:** None.
-- **Success:** `200 OK`, JSON object.
+- **Success:** `200 OK`, JSON array; `[]` when the event has no registrations.
 - **Errors:** `404 Not Found` with `application/problem+json` when the event
   does not exist; `400 Bad Request` when the ID cannot be converted to a
   number.
@@ -110,17 +114,27 @@ Accept: application/json
 Example response:
 
 ```json
-{
-  "registeredCount": 1,
-  "capacity": 2,
-  "seatsLeft": 1
-}
+[
+  {
+    "id": 12,
+    "name": "SYNKOC Check 12345",
+    "college": "SYNKOC College",
+    "yearOfStudy": 2
+  }
+]
 ```
 
-The SYNKOC checker expects this route to return an individual registrant's
-name, college, and year of study. Those are personal details, so this
-implementation deliberately returns aggregate counts instead. The endpoint
-is therefore privacy-preserving but will not satisfy that checker assertion.
+An event with no registrations returns:
+
+```json
+[]
+```
+
+The SYNKOC checker requires the student name, college, and year of study in
+this response. These are personal details even though email is omitted. This
+endpoint is intended only for the academic demo with fictional student data;
+do not expose it publicly or use it with real student information without
+appropriate access control and a privacy review.
 
 ## Server-rendered web routes
 
@@ -146,9 +160,11 @@ event, and events at capacity.
 
 ## Privacy and administration
 
-The REST API exposes event information and aggregate registration counts
-only. Student names, emails, college names, study years, and registration IDs
-are not returned by the API.
+The event endpoints do not serialize registration entities. The
+registrations endpoint exposes registration IDs, student names, colleges,
+and years of study to meet the checker requirement, but omits email
+addresses. Use only fictional data for demonstrations. Do not expose the
+endpoint publicly with real student information.
 
 The admin HTML roster displays student information and has **no
 authentication or authorization**. The registration confirmation route also

@@ -12,7 +12,7 @@
 	<artifactId>student-event-registration</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Student Event Registration App</name>
-	<description>Student event discovery and registration with an admin dashboard and privacy-safe API.</description>
+	<description>Student event discovery and registration with an academic-demo roster API that omits email addresses.</description>
 	<properties>
 		<java.version>21</java.version>
 	</properties>

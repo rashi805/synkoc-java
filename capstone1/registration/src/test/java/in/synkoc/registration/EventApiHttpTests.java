@@ -63,15 +63,28 @@ class EventApiHttpTests {
 	}
 
 	@Test
-	void realHttpRegistrationSummaryReturnsAggregateOnly() throws Exception {
-		registrationRepository.save(new Registration(event, "Student Name", "private@example.com",
-				"Example College", 2));
+	void realHttpRegistrationListReturnsRequiredStudentFieldsWithoutEmail() throws Exception {
+		registrationRepository.save(new Registration(event, "Demo Student", "private@example.com",
+				"Fictional College", 2));
 
 		HttpResponse<String> response = get("/api/events/" + event.getId() + "/registrations");
 		assertThat(response.statusCode()).isEqualTo(200);
-		assertThat(response.body()).contains("\"registeredCount\":1", "\"capacity\":2", "\"seatsLeft\":1");
-		assertThat(response.body()).doesNotContain("Student Name", "private@example.com",
-				"Example College", "\"yearOfStudy\"", "\"email\"", "\"id\"");
+		assertThat(response.headers().firstValue("Content-Type").orElse(""))
+				.contains("application/json");
+		assertThat(response.body()).matches(
+				"\\[\\{\\s*\"id\"\\s*:\\s*\\d+\\s*,\\s*\"name\"\\s*:\\s*\"Demo Student\"\\s*,\\s*"
+						+ "\"college\"\\s*:\\s*\"Fictional College\"\\s*,\\s*\"yearOfStudy\"\\s*:\\s*2\\s*}\\s*]");
+		assertThat(response.body()).doesNotContain("private@example.com", "\"email\"");
+	}
+
+	@Test
+	void realHttpRegistrationListReturnsEmptyArrayWhenEventHasNoRegistrations() throws Exception {
+		HttpResponse<String> response = get("/api/events/" + event.getId() + "/registrations");
+
+		assertThat(response.statusCode()).isEqualTo(200);
+		assertThat(response.headers().firstValue("Content-Type").orElse(""))
+				.contains("application/json");
+		assertThat(response.body()).isEqualTo("[]");
 	}
 
 	@Test
@@ -84,7 +97,7 @@ class EventApiHttpTests {
 	}
 
 	@Test
-	void realHttpRegistrationSummaryRejectsMalformedEventId() throws Exception {
+	void realHttpRegistrationListRejectsMalformedEventId() throws Exception {
 		HttpResponse<String> response = get("/api/events/not-a-number/registrations");
 		assertThat(response.statusCode()).isEqualTo(400);
 		assertThat(response.body()).doesNotContain("private@example.com", "Student Name");
