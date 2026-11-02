@@ -2,6 +2,7 @@ package in.synkoc.registration.service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,20 @@ public class EventService {
 	public List<EventSummary> upcomingEvents() {
 		return eventRepository.findByDateGreaterThanEqualOrderByDateAsc(LocalDate.now()).stream()
 				.map(this::toSummary)
+				.toList();
+	}
+
+	@Transactional(readOnly = true)
+	public List<EventSummary> searchUpcomingEvents(String query) {
+		List<EventSummary> events = upcomingEvents();
+		if (query == null || query.isBlank()) {
+			return events;
+		}
+
+		String searchTerm = query.trim().toLowerCase(Locale.ROOT);
+		return events.stream()
+				.filter(event -> event.title().toLowerCase(Locale.ROOT).contains(searchTerm)
+						|| event.venue().toLowerCase(Locale.ROOT).contains(searchTerm))
 				.toList();
 	}
 

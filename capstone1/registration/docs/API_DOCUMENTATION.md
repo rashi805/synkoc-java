@@ -144,7 +144,7 @@ browser form fields and a redirect after successful registration.
 | Method | Path | Purpose | Request | Response and errors |
 | --- | --- | --- | --- | --- |
 | `GET` | `/` | Home route. | None. | Redirects to `/events`. |
-| `GET` | `/events` | List upcoming events with detail and direct registration links for events with seats. | None. | `200 OK`, event listing HTML. |
+| `GET` | `/events` | List or search upcoming events with detail and direct registration links for events with seats. | Optional `query` parameter searches title and venue, case-insensitively. | `200 OK`, event listing HTML; an empty search result has a helpful message. |
 | `GET` | `/events/{id}` | View event information and registration availability. | Event ID in path. | `200 OK`; `404 Not Found` for an unknown event. |
 | `GET` | `/events/{eventId}/register` | View the registration form. | Event ID in path. | `200 OK`; past events redirect to their details page; unknown event is `404`. |
 | `POST` | `/events/{eventId}/register` | Submit a registration. | `name`, `email`, `college`, `yearOfStudy` form fields. | Success redirects to `/registrations/{id}`. Invalid fields, duplicate email, full event, or past event re-render the form with an error. Unknown event is `404`. |

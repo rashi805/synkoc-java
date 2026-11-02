@@ -15,6 +15,7 @@ registration review into one small application.
 ## Features
 
 - Browse upcoming events, dates, venues, capacity, and seats remaining.
+- Search upcoming events by event name or venue.
 - View an individual event and register for an open event directly from the
   event listing or its detail page.
 - Validate student details on the server and in the browser.
@@ -112,7 +113,7 @@ URLs use sequential registration IDs, so they are not private links.
 | Method | Path | Purpose |
 |---|---|---|
 | GET | `/` | Redirect to the event listing |
-| GET | `/events` | Browse upcoming events and direct registration links |
+| GET | `/events` | Browse or search upcoming events, with direct registration links |
 | GET | `/events/{id}` | View event details |
 | GET, POST | `/events/{eventId}/register` | View and submit a registration |
 | GET | `/registrations/{id}` | View a registration confirmation |
@@ -156,9 +157,9 @@ Run the full test suite from this directory:
 ./mvnw -B clean test
 ```
 
-The tests cover page rendering and navigation, API responses and privacy,
-invalid and unknown API requests, validation, duplicate registration, event
-capacity, past events, and admin views.
+The tests cover page rendering and navigation, event search, API responses and
+privacy, invalid and unknown API requests, validation, duplicate registration,
+event capacity, past events, and admin views.
 
 ## Screenshots
 
@@ -188,8 +189,7 @@ under `docs/screenshots/`.
   student information.
 - Add event creation, editing, and deletion if those operations are approved
   by the capstone specification.
-- Add search/filtering and richer event descriptions if the event data model
-  is extended.
+- Add richer event descriptions if the event data model is extended.
 - Consider confirmation email, registration cancellation, and deployment
   after defining their requirements.
 

@@ -30,6 +30,15 @@
 			<div><p class="eyebrow eyebrow-dark">THE CAMPUS CALENDAR</p><h2>Coming up</h2></div>
 			<p class="section-note">A little inspiration is just around the corner.</p>
 		</div>
+		<form class="event-search" th:action="@{/events}" method="get" role="search">
+			<label for="event-search-query">Search by event or venue</label>
+			<div class="event-search-controls">
+				<input id="event-search-query" type="search" name="query" th:value="${query}"
+						placeholder="e.g. Hackathon or Auditorium">
+				<button class="button button-dark" type="submit">Search</button>
+				<a class="text-link" th:if="${!#strings.isEmpty(query)}" th:href="@{/events}">Clear search</a>
+			</div>
+		</form>
 		<div class="event-grid" th:if="${!#lists.isEmpty(events)}">
 			<article class="event-card" th:each="event, eventStatus : ${events}">
 				<div class="event-card-top">
@@ -55,7 +64,9 @@
 			</article>
 		</div>
 		<div class="empty-state" th:if="${#lists.isEmpty(events)}">
-			<span class="empty-icon">✳</span><h3>Nothing on the calendar just yet</h3><p>Check back soon for events to explore.</p>
+			<span class="empty-icon">✳</span>
+			<h3 th:text="${#strings.isEmpty(query)} ? 'Nothing on the calendar just yet' : 'No events match your search'">No events found</h3>
+			<p th:text="${#strings.isEmpty(query)} ? 'Check back soon for events to explore.' : 'Try another event name or venue.'">Try another search.</p>
 		</div>
 	</section>
 	<section class="bottom-cta"><div class="container bottom-cta-inner"><p class="eyebrow">YOUR NEXT CHAPTER</p><h2>Show up curious.<br>Leave inspired.</h2><a class="button button-dark" href="#upcoming">Find your next event <span aria-hidden="true">↗</span></a></div></section>

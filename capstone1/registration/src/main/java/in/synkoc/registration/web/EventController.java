@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import in.synkoc.registration.dto.EventSummary;
 import in.synkoc.registration.service.EventService;
@@ -22,8 +23,10 @@ public class EventController {
 	}
 
 	@GetMapping
-	public String listEvents(Model model) {
-		model.addAttribute("events", eventService.upcomingEvents());
+	public String listEvents(@RequestParam(required = false) String query, Model model) {
+		String searchQuery = query == null ? "" : query.trim();
+		model.addAttribute("events", eventService.searchUpcomingEvents(searchQuery));
+		model.addAttribute("query", searchQuery);
 		return "events/list";
 	}
 

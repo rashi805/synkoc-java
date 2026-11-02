@@ -53,7 +53,8 @@ Browser pages / REST client
 
 ## Application workflow
 
-1. A visitor opens the event listing and sees upcoming events sorted by date.
+1. A visitor opens the event listing and sees upcoming events sorted by date,
+   or searches by event title or venue.
 2. The visitor opens an event detail page to review its date, venue, capacity,
    and remaining seats.
 3. For an event that has not passed and still has room, the visitor submits
@@ -106,8 +107,7 @@ registration status tables in the current model.
   is handled.
 - Confirm whether the capstone requires event create/update/delete operations
   before implementing them.
-- Add event descriptions, search, filters, and accessibility review as
+- Add richer event descriptions and further accessibility review as
   requirements are agreed.
 - Add registration cancellation, email notifications, and deployment after
   deciding their behavior and privacy requirements.
-

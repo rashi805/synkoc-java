@@ -67,6 +67,29 @@ class StudentEventRegistrationTests {
 	}
 
 	@Test
+	void eventSearchFiltersByTitleOrVenueWithoutCaseSensitivity() throws Exception {
+		mockMvc.perform(get("/events").param("query", "LIBRARY"))
+				.andExpect(status().isOk())
+				.andExpect(content().string(org.hamcrest.Matchers.containsString("Study Jam")))
+				.andExpect(content().string(org.hamcrest.Matchers.not(
+						org.hamcrest.Matchers.containsString("Resume Clinic"))));
+
+		mockMvc.perform(get("/events").param("query", "resume"))
+				.andExpect(status().isOk())
+				.andExpect(content().string(org.hamcrest.Matchers.containsString("Resume Clinic")))
+				.andExpect(content().string(org.hamcrest.Matchers.not(
+						org.hamcrest.Matchers.containsString("Study Jam"))));
+	}
+
+	@Test
+	void eventSearchShowsHelpfulEmptyState() throws Exception {
+		mockMvc.perform(get("/events").param("query", "does-not-exist"))
+				.andExpect(status().isOk())
+				.andExpect(content().string(org.hamcrest.Matchers.containsString("No events match your search")))
+				.andExpect(content().string(org.hamcrest.Matchers.containsString("Try another event name or venue.")));
+	}
+
+	@Test
 	void initializerSeedsFourFutureEventsIncludingTwoSeatResumeClinicOnlyWhenEmpty() {
 		registrationRepository.deleteAll();
 		eventRepository.deleteAll();
